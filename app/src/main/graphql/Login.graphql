@@ -1,0 +1,13 @@
+mutation Login($email: String!, $password: String!, ){
+    tokenAuth(email: $email, password: $password) {
+        token
+        payload
+        refreshToken
+        refreshExpiresIn
+        user{
+            id
+            username
+            email
+        }
+    }
+}

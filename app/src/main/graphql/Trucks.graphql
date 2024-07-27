@@ -1,0 +1,7 @@
+query TruckList{
+    allTrucks {
+        id
+        licensePlate
+        isEnabled
+    }
+}

@@ -1,0 +1,18 @@
+query DiscountGiftListByProductPurchasedList(
+    $productIds: [Int!],
+    $quantities: [Int!],
+    $subtotals: [Float!],
+    $typeTradeId:  Int!
+){
+    discountGiftsByProductsPurchased(
+        productIds: $productIds,
+        quantities: $quantities,
+        subtotals: $subtotals,
+        typeTradeId: $typeTradeId
+    ){
+        productIds
+        totalDiscountGift
+        bonusId
+        bonusConjunction
+    }
+}

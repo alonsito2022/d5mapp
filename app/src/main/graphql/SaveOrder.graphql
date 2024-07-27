@@ -1,0 +1,45 @@
+mutation SaveOrder(
+    $userId: String!, $clientId: String!, $addressId: String!,
+    $typeTradeId:  String!, $dailyRouteId: String!,
+    $selectedPaymentType: String!, $selectedDocumentType: String!,
+    $productTariffIds: [Int!],
+    $quantities: [Int!],
+    $bonusIds: [Int!],
+    $prices: [Float!],
+    $discountPercentages: [Float!],
+    $discountAmounts: [Float!],
+    $baseCost: Float!,
+    $igvCost: Float!,
+    $totalSale: Float!,
+    $freeCost: Float!,
+    $discountCost: Float!,
+    $exoneratedCost: Float!,
+    $perceptionCost: Float!,
+    $totalToPay: Float!
+){
+    createOrder(
+        userId: $userId,
+        clientId: $clientId,
+        addressId: $addressId,
+        typeTradeId: $typeTradeId,
+        dailyRouteId: $dailyRouteId,
+        selectedPaymentType: $selectedPaymentType,
+        selectedDocumentType: $selectedDocumentType,
+        productTariffIds: $productTariffIds,
+        quantities: $quantities,
+        bonusIds: $bonusIds,
+        prices: $prices,
+        discountPercentages: $discountPercentages,
+        discountAmounts: $discountAmounts,
+        baseCost: $baseCost,
+        igvCost: $igvCost,
+        totalSale: $totalSale,
+        freeCost: $freeCost,
+        discountCost: $discountCost,
+        exoneratedCost: $exoneratedCost,
+        perceptionCost: $perceptionCost,
+        totalToPay: $totalToPay
+    ) {
+        message
+    }
+}

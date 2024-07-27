@@ -1,0 +1,7 @@
+query PointListByZone($zoneCenterId: Int!){
+    pointsByZoneCenterId(zoneCenterId: $zoneCenterId){
+        id
+        latitude
+        longitude
+    }
+}

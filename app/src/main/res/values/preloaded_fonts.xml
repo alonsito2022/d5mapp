@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/lato</item>
+        <item>@font/lato_bold</item>
+        <item>@font/lato_light</item>
+        <item>@font/lexend</item>
+        <item>@font/lexend_light</item>
+        <item>@font/lexend_thin</item>
+        <item>@font/montserrat</item>
+        <item>@font/montserrat_light</item>
+        <item>@font/nobile</item>
+        <item>@font/noto_sans</item>
+        <item>@font/noto_sans_bold</item>
+        <item>@font/open_sans</item>
+        <item>@font/open_sans_light</item>
+        <item>@font/oswald</item>
+        <item>@font/oswald_bold</item>
+        <item>@font/oxygen</item>
+        <item>@font/oxygen_bold</item>
+        <item>@font/oxygen_light</item>
+        <item>@font/poppins</item>
+        <item>@font/poppins_bold</item>
+        <item>@font/roboto</item>
+    </array>
+</resources>

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">D5M Android App</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAm2ZKo18M00CT5JqW6F4O6LWqx_hEvvvU</string>
+
+</resources>

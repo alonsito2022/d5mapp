@@ -1,0 +1,9 @@
+query PermittedZoneList($userId: Int){
+    permittedZonesByUserId(userId:$userId){
+        id
+        name
+        code
+        latitude
+        longitude
+    }
+}

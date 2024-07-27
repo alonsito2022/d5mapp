@@ -1,0 +1,21 @@
+query ClientFilteredList($query1: String!, $query2: String!){
+    searchClientsByCriteria(searchQuery: $query1, searchBy: $query2){
+        id
+        code
+        names
+        phone
+        documentType
+        documentTypeReadable
+        documentNumber
+        observation
+        isEnabled
+        typeTradeId
+        typeTradeName
+
+        creditLine
+        debt
+        isBlocked
+        isSuspended
+        isObserved
+    }
+}

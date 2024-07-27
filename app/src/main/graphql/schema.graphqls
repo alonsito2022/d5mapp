@@ -1,0 +1,3855 @@
+type Query {
+  truckById(pk: ID): TruckType
+
+  allTrucks: [TruckType]
+
+  allZones: [ZoneCenterType]
+
+  allDrivers: [CustomUserType]
+
+  zoneById(pk: ID): ZoneCenterType
+
+  zoneCenterByTruckId(pk: ID): [ZoneCenterType]
+
+  zoneCentersByEmployeeId(pk: ID): [ZoneCenterType]
+
+  zoneCenterByUserId(pk: ID): [ZoneCenterType]
+
+  zoneCenterByTruckIdDate(pk: ID, date: Date): [ZoneCenterType]
+
+  allGangs: [GangType]
+
+  gangsByDate(date: Date): [GangType]
+
+  gangById(pk: ID): GangType
+
+  cashFlowOperationsByDates(startDate: Date, endDate: Date, subsidiaryId: ID): [CashFlowType]
+
+  searchClientsByCriteria(searchQuery: String, searchBy: String): [PersonType]
+
+  addressesByClientId(clientId: Int): [PersonAddressType]
+
+  permittedZonesByUserId(userId: Int): [ZoneCenterType]
+
+  assignedZonesByUserId(userId: Int, visitDate: Date): [ZoneCenterType]
+
+  pointsByZoneCenterId(zoneCenterId: Int): [ZoneCenterPointType]
+
+  zonesByGangId(gangId: Int): [ZoneCenterType]
+
+  assignedGangsByUserId(userId: Int, visitDate: Date): [GangType]
+
+  dailyRoutesByCriteria(userId: Int, gangId: Int, visitDate: String): [DailyGenerateRouteType]
+
+  ordersInDailyRoutesByCriteria(searchDate: String, gangId: Int, status: String): [DailyRouteType]
+
+  ordersWithoutApprovalByCriteria(searchDate: String, gangId: Int, employeeId: Int): [OperationType]
+
+  approvedOrdersByCriteria(searchDate: String, gangId: Int, employeeId: Int): [OperationType]
+
+  ordersByCriteria(startDate: Date, endDate: Date): [OperationType]
+
+  createdRouteAndIssuedOrdersByCriteria(searchDate: String, gangId: Int): CreatedRouteType
+
+  dispatchedOrdersByCriteria(routeId: Int): [OperationType]
+
+  stockInProductsInWarehouseByCriteria(dispatchDate: String, warehouseId: Int): [ProductType]
+
+  stockInProductsByWarehouse(warehouseId: Int, productTariffIds: [Int!]): [ProductType]
+
+  accountStatusByClient(clientId: Int): [OperationType]
+
+  clientWithDebt(clientId: Int): PersonType
+
+  overdueDebtRules: [OverdueDebtRuleType]
+
+  overdueDebtRuleById(pk: ID): OverdueDebtRuleType
+
+  employeesWithGang: [CustomUserType]
+
+  debtorClientsBySellerIdAndDate(sellerId: Int, date: Date): [OperationType]
+
+  cashesByType(type: String): [CashType]
+
+  persons: [PersonType]
+
+  clientsByZoneId(zoneId: Int): [PersonType]
+
+  outputsByDate(startDate: Date, endDate: Date, saleCenterId: Int, outputType: String): [OperationType]
+
+  invoicesByDates(startDate: Date, endDate: Date): [OperationType]
+
+  outputById(pk: ID): OperationType
+
+  allClients: [PersonType]
+
+  clientsByUserId(userId: Int): [PersonType]
+
+  clientsBySaleCenter(saleCenterId: Int): [PersonType]
+
+  clientById(pk: ID): PersonType
+
+  clientByDocument(document: String): PersonType
+
+  searchClients(search: String): [PersonType]
+
+  districtsByProvinceId(provinceId: String): [DistrictType]
+
+  provincesByDepartmentId(departmentId: String): [ProvinceType]
+
+  departments: [DepartmentType]
+
+  allDays: [DayType]
+
+  nationalities: [NationalityType]
+
+  businessTypes: [BusinessTypeType]
+
+  typeTrades: [TypeTradeType]
+
+  zoneCenter: [ZoneCenterType]
+
+  motives(action: String): [MotiveType]
+
+  salesByDate(startDate: Date, endDate: Date, documentTypeId: String): [OperationType]
+
+  saleById(pk: Int): OperationType
+
+  unitById(pk: ID): UnitType
+
+  warehouseById(pk: ID): WarehouseType
+
+  productTariffById(pk: ID): ProductTariffType
+
+  supplierById(pk: ID): PersonType
+
+  lineById(pk: ID): ProductLineType
+
+  lineBySupplierId(pk: ID): [ProductLineType]
+
+  subLineById(pk: ID): ProductSubLineType
+
+  subLineByLineId(pk: ID): [ProductSubLineType]
+
+  productById(pk: ID): ProductType
+
+  entryById(pk: ID): OperationType
+
+  allSuppliers(productLineId: Int): [PersonType]
+
+  allLines(supplierId: Int): [ProductLineType]
+
+  allSubLines(productLineId: Int): [ProductSubLineType]
+
+  allUnits: [UnitType]
+
+  allWarehouses(subsidiaryId: Int, truckId: Int, category: String): [WarehouseType]
+
+  allProducts(criteria: String, searchText: String, supplierId: Int, productLineId: Int, productSubLineId: Int, available: String, activeType: String): [ProductType]
+
+  allProductsGift: [ProductType]
+
+  allProductsByWarehouse(warehouseId: Int, supplierId: Int, productLineId: Int, productSubLineId: Int): [ProductType]
+
+  allProductsWithTariff: [ProductType]
+
+  allProductTariffs(productId: Int): [ProductTariffType]
+
+  productTariffByTypeTradeAndProductId(tradeId: Int, productId: Int): ProductTariffType
+
+  allProductTariffsWithTypeTradeByProductId(productId: Int): [ProductTariffByTradeType]
+
+  searchProductTariffsByCriteria(searchQuery: String, searchBy: String, typeTradeId: Int): [ProductTariffType]
+
+  entriesByDates(startDate: Date, endDate: Date, warehouseId: Int, operationStatus: String): [OperationType]
+
+  adjustedEntriesByDates(startDate: Date, endDate: Date, warehouseId: Int, operationStatus: String): [OperationType]
+
+  adjustedDeparturesByDates(startDate: Date, endDate: Date, warehouseId: Int, operationStatus: String): [OperationType]
+
+  transfersByDates(startDate: Date, endDate: Date, warehouseId: Int, operationStatus: String): [OperationType]
+
+  regularizationOperations(warehouseId: ID, productId: ID, startDate: Date, endDate: Date): InventoryType
+
+  productTariffsByTypeTradeId(typeTradeId: Int, productIds: [Int!]): [ProductTariffType]
+
+  bonusesByDatesAndTypeTradeId(startDate: Date, endDate: Date, typeTradeId: Int, supplierId: Int): [BonusType]
+
+  bonusById(pk: ID): BonusType
+
+  bonusesByProductPurchasedId(productPurchasedId: Int, typeTradeId: Int, quantity: Float): [BonusDetailType]
+
+  productGiftsByProductPurchasedId(productPurchasedId: Int, typeTradeId: Int, quantity: Float): [ProductGiftDataType]
+
+  productGiftsByItems(items: [ProductEvalInput], typeTradeId: Int): [ProductGiftDataType]
+
+  discountGiftsByItems(items: [ProductEvalInput], typeTradeId: Int): [DiscountGiftDataType]
+
+  productGiftsByProductsPurchased(productIds: [Int!], quantities: [Int!], subtotals: [Float!], typeTradeId: Int): [ProductGiftDataType]
+
+  discountGiftsByProductsPurchased(productIds: [Int!], quantities: [Int!], subtotals: [Float!], typeTradeId: Int): [DiscountGiftDataType]
+
+  companies: [CompanyType]
+
+  subsidiaries: [SubsidiaryType]
+
+  users: [CustomUserType]
+
+  companyById(pk: ID): CompanyType
+
+  subsidiaryById(pk: ID): SubsidiaryType
+
+  userById(pk: ID): CustomUserType
+
+  usersByRole(role: String): [CustomUserType]
+
+  usersByTruckId(pk: ID): [CustomUserType]
+
+  sellersByDay(date: Date, type: Int): [CustomUserType]
+}
+
+type TruckType {
+  id: ID!
+
+  description: String
+
+  licensePlate: String
+
+  brand: String
+
+  version: String
+
+  ownership: DistributionsTruckOwnershipChoices!
+
+  owner: ClientDataType
+
+  driver: CustomUserType
+
+  isEnabled: Boolean!
+
+  capacity: Decimal!
+
+  gangSet: [GangType!]!
+
+  warehouseSet: [WarehouseType!]!
+
+  ownershipReadable: String
+
+  hasGang: Boolean
+
+  ownerId: Int
+
+  ownerName: String
+
+  driverId: Int
+
+  driverName: String
+}
+
+"""
+The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
+"""
+scalar ID
+
+"""
+The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
+"""
+scalar String
+
+"""
+An enumeration.
+"""
+enum DistributionsTruckOwnershipChoices {
+  """
+  PROPIO
+  """
+  A_01
+
+  """
+  ALQUILADO
+  """
+  A_02
+
+  """
+  NO APLICA
+  """
+  NA
+}
+
+type ClientDataType {
+  id: ID!
+
+  code: String
+
+  economicActivityMain: OperationsPersonEconomicActivityMainChoices!
+
+  economicActivitySecondary1: OperationsPersonEconomicActivitySecondary1Choices!
+
+  documentType: OperationsPersonDocumentTypeChoices!
+
+  documentNumber: String
+
+  names: String
+
+  phone: String
+
+  email: String
+
+  isEnabled: Boolean!
+
+  isClient: Boolean!
+
+  isSupplier: Boolean!
+
+  nationality: String
+
+  creditLine: Decimal!
+
+  businessType: BusinessTypeType
+
+  typeTrade: TypeTradeType
+
+  shortName: String
+
+  sequence: Int!
+
+  observation: String
+
+  isBlocked: Boolean!
+
+  isSuspended: Boolean!
+
+  isObserved: Boolean!
+
+  personaddressSet: [PersonAddressType!]!
+
+  clients: [OperationType!]!
+
+  suppliers: [OperationType!]!
+
+  truckSet: [TruckType!]!
+
+  productlineSet: [ProductLineType!]!
+
+  bonusdetailSet: [BonusDetailType!]!
+
+  supplierAccount: [CashType!]!
+
+  clientAccount: [CashType!]!
+
+  cashflowSet: [CashFlowType!]!
+
+  debt: Float
+
+  documentTypeReadable: String
+
+  typeTradeId: Int
+
+  typeTradeName: String
+}
+
+"""
+An enumeration.
+"""
+enum OperationsPersonEconomicActivityMainChoices {
+  """
+  NO APLICA
+  """
+  A_0
+
+  """
+  MANTENIMIENTO Y REPARACIÓN DE VEHÍCULOS AUTOMOTORES
+  """
+  A_4520
+
+  """
+  VENTA AL POR MAYOR A CAMBIO DE UNA RETRIBUCIÓN O POR CONTRATA
+  """
+  A_4610
+
+  """
+  VENTA AL POR MAYOR DE ALIMENTOS, BEBIDAS Y TABACO
+  """
+  A_4630
+
+  """
+  VENTA AL POR MAYOR NO ESPECIALIZADA
+  """
+  A_4690
+
+  """
+  TRANSPORTE DE CARGA POR CARRETERA
+  """
+  A_4923
+}
+
+"""
+An enumeration.
+"""
+enum OperationsPersonEconomicActivitySecondary1Choices {
+  """
+  NO APLICA
+  """
+  A_0
+
+  """
+  MANTENIMIENTO Y REPARACIÓN DE VEHÍCULOS AUTOMOTORES
+  """
+  A_4520
+
+  """
+  VENTA AL POR MAYOR A CAMBIO DE UNA RETRIBUCIÓN O POR CONTRATA
+  """
+  A_4610
+
+  """
+  VENTA AL POR MAYOR DE ALIMENTOS, BEBIDAS Y TABACO
+  """
+  A_4630
+
+  """
+  VENTA AL POR MAYOR NO ESPECIALIZADA
+  """
+  A_4690
+
+  """
+  TRANSPORTE DE CARGA POR CARRETERA
+  """
+  A_4923
+}
+
+"""
+An enumeration.
+"""
+enum OperationsPersonDocumentTypeChoices {
+  """
+  DNI
+  """
+  A_01
+
+  """
+  RUC
+  """
+  A_06
+}
+
+"""
+The `Boolean` scalar type represents `true` or `false`.
+"""
+scalar Boolean
+
+"""
+The `Decimal` scalar type represents a python Decimal.
+"""
+scalar Decimal
+
+type BusinessTypeType {
+  id: ID!
+
+  name: String
+
+  personSet: [ClientDataType!]!
+}
+
+type TypeTradeType {
+  id: ID!
+
+  name: String
+
+  creditSuspension: Int!
+
+  cashAndCreditBlock: Int!
+
+  personSet: [ClientDataType!]!
+
+  producttariffSet: [ProductTariffType!]!
+
+  bonusSet: [BonusType!]!
+
+  overduedebtruleSet: [OverdueDebtRuleType!]!
+}
+
+"""
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
+"""
+scalar Int
+
+type ProductTariffType {
+  id: Int
+
+  product: ProductType
+
+  unit: UnitType
+
+  purchasePrice1: Decimal!
+
+  cashSalePrice: Float
+
+  creditPercentage: Float
+
+  creditSalePrice: Float
+
+  quantityMinimum: Float
+
+  typeTrade: TypeTradeType
+
+  operationdetailSet: [OperationDetailType!]!
+
+  productId: Int
+
+  simpleProductId: Int
+
+  productName: String
+
+  productCode: String
+
+  productActiveType: String
+
+  productExemptFromIgv: Boolean
+
+  unitId: Int
+
+  unitName: String
+
+  unitDescription: String
+
+  totalUsed: Int
+
+  isSelected: Boolean
+
+  cashSalePriceWithoutIgv: Float
+
+  creditSalePriceWithoutIgv: Float
+
+  stock: Float
+
+  quantity: Float
+
+  typeTradeId: Int
+
+  typeTradeName: String
+
+  subjectPerception: Boolean
+
+  exemptFromIgv: Boolean
+}
+
+type ProductType {
+  id: ID!
+
+  code: String
+
+  name: String
+
+  stockMin: Int
+
+  stockMax: Int
+
+  path: String
+
+  isPurchased: Boolean!
+
+  isManufactured: Boolean!
+
+  available: Boolean!
+
+  productSubLine: ProductSubLineType
+
+  activeType: LogisticsProductActiveTypeChoices!
+
+  activationDate: Date
+
+  ean: String
+
+  deactivationReason: String
+
+  weightInKilograms: Decimal!
+
+  maximumFactor: Decimal!
+
+  minimumFactor: Decimal!
+
+  minimumUnit: UnitType
+
+  maximumUnit: UnitType
+
+  subjectPerception: Boolean!
+
+  exemptFromIgv: Boolean!
+
+  observation: String
+
+  parentProduct: ProductType
+
+  productSet: [ProductType!]!
+
+  producttariffSet: [ProductTariffType!]!
+
+  productGifts: [BonusType!]!
+
+  productPurchases: [BonusDetailType!]!
+
+  subLineId: Int
+
+  subLineName: String
+
+  lineId: Int
+
+  lineName: String
+
+  supplierId: Int
+
+  supplierName: String
+
+  minimumUnitId: Int
+
+  minimumUnitName: String
+
+  maximumUnitId: Int
+
+  maximumUnitName: String
+
+  activeTypeReadable: String
+
+  requestedStock: Float
+
+  currentStock: Float
+
+  checked: Boolean
+}
+
+type ProductSubLineType {
+  id: ID!
+
+  name: String!
+
+  productLine: ProductLineType
+
+  code: String
+
+  productSet: [ProductType!]!
+
+  bonusdetailSet: [BonusDetailType!]!
+
+  lineId: Int
+
+  lineName: String
+
+  supplierId: Int
+
+  checked: Boolean
+}
+
+type ProductLineType {
+  id: ID!
+
+  name: String!
+
+  supplier: ClientDataType
+
+  code: String
+
+  productsublineSet: [ProductSubLineType!]!
+
+  bonusdetailSet: [BonusDetailType!]!
+
+  supplierId: Int
+
+  supplierName: String
+
+  checked: Boolean
+}
+
+type BonusDetailType {
+  id: Int
+
+  productPurchased: ProductType
+
+  bonus: BonusType
+
+  supplier: ClientDataType
+
+  line: ProductLineType
+
+  subLine: ProductSubLineType
+
+  productPurchasedCode: String
+
+  productPurchasedName: String
+
+  productPurchasedId: Int
+
+  tariffId: Int
+
+  cashPrice: Float
+
+  cashAmountToEval: Float
+
+  supplierId: Int
+
+  supplierName: String
+
+  supplierCode: String
+
+  lineId: Int
+
+  lineName: String
+
+  lineCode: String
+
+  subLineId: Int
+
+  subLineName: String
+
+  subLineCode: String
+}
+
+type BonusType {
+  id: Int
+
+  name: String
+
+  startDate: Date
+
+  endDate: Date
+
+  value: Float
+
+  valueMinimum: Float
+
+  valueMaximum: Float
+
+  only: Int
+
+  createdAt: DateTime!
+
+  updatedAt: DateTime!
+
+  typeTrade: TypeTradeType
+
+  criteria: Int
+
+  typeBonus: Int
+
+  conjunction: Int
+
+  ambit: Int
+
+  gift: Int
+
+  quantityGift: Float
+
+  discount: Float
+
+  productGift: ProductType
+
+  operationdetailSet: [OperationDetailType!]!
+
+  bonusdetailSet: [BonusDetailType!]!
+
+  typeTradeId: Int
+
+  typeTradeName: String
+
+  criteriaReadable: String
+
+  typeBonusReadable: String
+
+  productGiftMinimumUnitName: String
+
+  productGiftCode: String
+
+  productGiftName: String
+
+  productGiftId: Int
+
+  conjunctionReadable: String
+
+  ambitReadable: String
+
+  giftReadable: String
+}
+
+"""
+The `Date` scalar type represents a Date
+value as specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar Date
+
+"""
+The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).
+"""
+scalar Float
+
+"""
+The `DateTime` scalar type represents a DateTime
+value as specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar DateTime
+
+type OperationDetailType {
+  id: Int
+
+  operation: OperationType
+
+  productTariff: ProductTariffType
+
+  quantity: Float
+
+  priceWithIgv: Float
+
+  priceWithoutIgv: Float
+
+  percentageDiscount: Float
+
+  amountDiscount: Float
+
+  amountPerception: Float
+
+  remainingQuantity: Decimal!
+
+  remainingPrice: Decimal!
+
+  remainingPriceTotal: Decimal!
+
+  batchCode: Int!
+
+  batchStock: Decimal!
+
+  batchPrice: Decimal!
+
+  batchPriceTotal: Decimal!
+
+  expireDate: Date
+
+  bonus: BonusType
+
+  totalQuantity: Float
+
+  productId: Int
+
+  productEan: String
+
+  productCode: String
+
+  productName: String
+
+  productExemptFromIgv: Boolean
+
+  productSubjectPerception: Boolean
+
+  unitId: Int
+
+  unitName: String
+
+  unitDescription: String
+
+  unitMinName: String
+
+  productTariffId: Int
+
+  maximumFactor: Float
+
+  currentStock: Float
+
+  oldPrice: Float
+
+  newPrice: String
+
+  subtotal: String
+
+  temporaryId: Int
+
+  igv: Float
+
+  total: Float
+
+  totalDiscountItem: Float
+
+  exemptFromIgv: Boolean
+
+  subjectPerception: Boolean
+
+  productActiveType: String
+
+  bonusId: Int
+
+  bonusConjunction: Int
+
+  productPurchaseId: Int
+
+  quantityReturned: Int
+
+  quantityAvailable: Int
+
+  productCodeBonus: String
+
+  productNameBonus: String
+
+  productBonusId: Int
+}
+
+type OperationType {
+  id: Int
+
+  paymentType: OperationsOperationPaymentTypeChoices!
+
+  documentTypeToGenerate: OperationsOperationDocumentTypeToGenerateChoices!
+
+  documentType: OperationsOperationDocumentTypeChoices!
+
+  documentNumber: String
+
+  correlative: Int!
+
+  client: ClientDataType
+
+  supplier: ClientDataType
+
+  user: CustomUserType
+
+  warehouse: WarehouseType
+
+  operationAction: OperationsOperationOperationActionChoices!
+
+  operationStatus: OperationsOperationOperationStatusChoices!
+
+  operationType: OperationsOperationOperationTypeChoices!
+
+  operationDate: Date
+
+  parentType: OperationsOperationParentTypeChoices!
+
+  parentOperation: OperationType
+
+  basePercentageDiscount: Float
+
+  baseAmountDiscount: Float
+
+  freeCost: Float
+
+  exoneratedCost: Float
+
+  baseCost: Float
+
+  baseAmountPerception: Float
+
+  waivedCost: Decimal!
+
+  igvCost: Float
+
+  totalSale: Float
+
+  createdAt: DateTime!
+
+  updatedAt: DateTime!
+
+  observation: String
+
+  billSerial: String
+
+  billType: String
+
+  billNumber: Int
+
+  billStatus: String
+
+  billDescription: String
+
+  billEnlacePdf: String
+
+  billDate: DateTime
+
+  billQr: String
+
+  billHash: String
+
+  httpStatusCode: Int
+
+  errorCode: Int
+
+  errorMessage: String
+
+  serial: String
+
+  glossary: String
+
+  paymentDate: Date
+
+  shippingDate: Date
+
+  referralDocumentType: OperationsOperationReferralDocumentTypeChoices!
+
+  referralSerial: String
+
+  referralCorrelative: Int!
+
+  referralOperationDate: Date
+
+  motive: MotiveType
+
+  currency: OperationsOperationCurrencyChoices!
+
+  exchangeRate: Decimal!
+
+  userWhoCanceled: CustomUserType
+
+  userWhoAuthorized: CustomUserType
+
+  authorizationDate: Date
+
+  cancellationDate: Date
+
+  dailyRoute: DailyRouteType
+
+  operationSet: [OperationType!]!
+
+  operationdetailSet: [OperationDetailType!]!
+
+  dailyrouteSet: [DailyRouteType!]!
+
+  cashflowSet: [CashFlowType!]!
+
+  dayNameResult: String
+
+  formattedDate: String
+
+  documentTypeToGenerateReadable: String
+
+  paymentTypeReadable: String
+
+  documentTypeReadable: String
+
+  referralDocumentTypeReadable: String
+
+  operationTypeReadable: String
+
+  currencyReadable: String
+
+  outputType: String
+
+  clientId: Int
+
+  clientNames: String
+
+  clientCode: String
+
+  clientDocumentTypeReadable: String
+
+  clientDocumentNumber: String
+
+  clientTypeTradeId: Int
+
+  clientTypeTradeName: String
+
+  clientCreditLine: Float
+
+  clientAddressId: Int
+
+  clientAddressName: String
+
+  clientSequence: Int
+
+  payedInCash: Float
+
+  payedInDeposit: Float
+
+  currentTotalSale: Float
+
+  paymentRemaining: Float
+
+  operationStatusName: String
+
+  creditDebt: Float
+
+  addressId: Int
+
+  addressName: String
+
+  dailyRouteId: Int
+
+  typeTradeId: Int
+
+  motiveId: Int
+
+  motiveName: String
+
+  supplierCode: String
+
+  supplierDocumentNumber: String
+
+  supplierName: String
+
+  warehouseId: Int
+
+  warehouseName: String
+
+  userId: Int
+
+  userCode: String
+
+  userDocumentNumber: String
+
+  userNames: String
+
+  userWhoCanceledId: Int
+
+  userWhoCanceledName: String
+
+  userWhoAuthorizedId: Int
+
+  userWhoAuthorizedName: String
+
+  totalPercentageDiscount: Float
+
+  clientDebt: Float
+
+  clientBalanceDebt: Float
+
+  totalDiscount: Float
+
+  totalUnaffected: Float
+
+  igvPercentage: Float
+
+  totalPerception: Float
+
+  totalPaid: Float
+
+  totalPending: Float
+
+  expirationDays: Float
+
+  previousSalesCount: Int
+
+  totalWeight: Float
+
+  deadline: Date
+
+  isExpired: Boolean
+
+  creditNoteIds: [Int!]
+
+  creditNoteDocumentNumbers: [String!]
+
+  totalCredit: Float
+
+  totalPayedCreditValidated: Float
+
+  totalPayedCreditNotValidated: Float
+}
+
+"""
+An enumeration.
+"""
+enum OperationsOperationPaymentTypeChoices {
+  """
+  NO APLICA
+  """
+  A_0
+
+  """
+  CONTADO
+  """
+  A_1
+
+  """
+  CREDITO
+  """
+  A_2
+}
+
+"""
+An enumeration.
+"""
+enum OperationsOperationDocumentTypeToGenerateChoices {
+  """
+  FACTURA
+  """
+  A_01
+
+  """
+  BOLETA
+  """
+  A_02
+
+  """
+  GUIA
+  """
+  A_04
+
+  """
+  NOTA DE INGRESO
+  """
+  A_05
+
+  """
+  NOTA DE SALIDA
+  """
+  A_06
+
+  """
+  PREVENTA
+  """
+  A_07
+
+  """
+  PLANILLA DE REPARTO
+  """
+  A_08
+
+  """
+  LIQUIDACION DE REPARTO
+  """
+  A_09
+
+  """
+  NOTA DE CREDITO CLIENTE
+  """
+  A_10
+
+  """
+  HOJA DE VISITAS
+  """
+  A_11
+
+  """
+  PLANILLA DE COBRANZA REPARTIDOR
+  """
+  A_12
+
+  """
+  NOTA DE AJUSTE DE INGRESO
+  """
+  A_13
+
+  """
+  NOTA DE AJUSTE DE SALIDA
+  """
+  A_14
+
+  """
+  TRANSFERENCIA
+  """
+  A_15
+
+  """
+  PLANILLA DE COBRANZA VENDEDOR
+  """
+  A_16
+
+  """
+  NO APLICA
+  """
+  NA
+}
+
+"""
+An enumeration.
+"""
+enum OperationsOperationDocumentTypeChoices {
+  """
+  FACTURA
+  """
+  A_01
+
+  """
+  BOLETA
+  """
+  A_02
+
+  """
+  GUIA
+  """
+  A_04
+
+  """
+  NOTA DE INGRESO
+  """
+  A_05
+
+  """
+  NOTA DE SALIDA
+  """
+  A_06
+
+  """
+  PREVENTA
+  """
+  A_07
+
+  """
+  PLANILLA DE REPARTO
+  """
+  A_08
+
+  """
+  LIQUIDACION DE REPARTO
+  """
+  A_09
+
+  """
+  NOTA DE CREDITO CLIENTE
+  """
+  A_10
+
+  """
+  HOJA DE VISITAS
+  """
+  A_11
+
+  """
+  PLANILLA DE COBRANZA REPARTIDOR
+  """
+  A_12
+
+  """
+  NOTA DE AJUSTE DE INGRESO
+  """
+  A_13
+
+  """
+  NOTA DE AJUSTE DE SALIDA
+  """
+  A_14
+
+  """
+  TRANSFERENCIA
+  """
+  A_15
+
+  """
+  PLANILLA DE COBRANZA VENDEDOR
+  """
+  A_16
+
+  """
+  NO APLICA
+  """
+  NA
+}
+
+type CustomUserType {
+  id: ID!
+
+  password: String!
+
+  lastLogin: DateTime
+
+  """
+  Indica que este usuario tiene todos los permisos sin asignárselos explícitamente.
+  """
+  isSuperuser: Boolean!
+
+  """
+  Requerido. 150 carácteres como máximo. Únicamente letras, dígitos y @/./+/-/_ 
+  """
+  username: String!
+
+  firstName: String!
+
+  lastName: String!
+
+  """
+  Indica si el usuario puede entrar en este sitio de administración.
+  """
+  isStaff: Boolean!
+
+  """
+  Indica si el usuario debe ser tratado como activo. Desmarque esta opción en lugar de borrar la cuenta.
+  """
+  isActive: Boolean!
+
+  dateJoined: DateTime!
+
+  email: String!
+
+  document: String
+
+  phone: String
+
+  address: String
+
+  birthDate: Date
+
+  subsidiary: SubsidiaryType
+
+  role: UsersCustomUserRoleChoices!
+
+  phoneOfRelative: String
+
+  code: String
+
+  remuneration: Decimal!
+
+  startDate: Date
+
+  endDate: Date
+
+  drivingLicense: String
+
+  whoRegisters: [OperationType!]!
+
+  whoCancels: [OperationType!]!
+
+  whoAuthorizes: [OperationType!]!
+
+  routeSet: [RouteType!]!
+
+  theOneWhoCancels: [DailyRouteType!]!
+
+  theOneWhoConfirms: [DailyRouteType!]!
+
+  truckSet: [TruckType!]!
+
+  gangdetailSet: [GangDetailsType!]!
+
+  zonecenterSet: [ZoneCenterType!]!
+
+  employeeAccount: [CashType!]!
+
+  cashflowSet: [CashFlowType!]!
+
+  subsidiaryId: Int
+
+  roleReadable: String
+
+  fullName: String
+}
+
+type SubsidiaryType {
+  id: ID!
+
+  name: String!
+
+  businessName: String
+
+  address: String
+
+  phone: String
+
+  ruc: String!
+
+  company: CompanyType
+
+  warehouseSet: [WarehouseType!]!
+
+  customuserSet: [CustomUserType!]!
+
+  cashSet: [CashType!]!
+
+  companyId: Int
+}
+
+type CompanyType {
+  id: ID!
+
+  name: String!
+
+  subsidiarySet: [SubsidiaryType!]!
+}
+
+type WarehouseType {
+  id: ID!
+
+  name: String
+
+  subsidiary: SubsidiaryType
+
+  truck: TruckType
+
+  category: LogisticsWarehouseCategoryChoices!
+
+  operationSet: [OperationType!]!
+
+  categoryReadable: String
+
+  subsidiaryId: Int
+
+  subsidiaryName: String
+
+  truckId: Int
+
+  truckLicensePlate: String
+}
+
+"""
+An enumeration.
+"""
+enum LogisticsWarehouseCategoryChoices {
+  """
+  VENTA
+  """
+  A_01
+
+  """
+  VEHICULO
+  """
+  A_02
+
+  """
+  RESERVA
+  """
+  A_03
+
+  """
+  NO APLICA
+  """
+  NA
+}
+
+type CashType {
+  id: Int
+
+  subsidiary: SubsidiaryType
+
+  employee: CustomUserType
+
+  supplier: ClientDataType
+
+  client: ClientDataType
+
+  name: String
+
+  accountNumber: String
+
+  type: AccountingCashTypeChoices!
+
+  currencyType: AccountingCashCurrencyTypeChoices!
+
+  createdAt: DateTime
+
+  isEnabled: Boolean!
+
+  cashflowSet: [CashFlowType!]!
+
+  currencyTypeReadable: String
+}
+
+"""
+An enumeration.
+"""
+enum AccountingCashTypeChoices {
+  """
+  CAJA
+  """
+  C
+
+  """
+  BANCO
+  """
+  B
+
+  """
+  CUENTA POR COBRAR
+  """
+  CC
+
+  """
+  CUENTA POR PAGAR
+  """
+  CP
+}
+
+"""
+An enumeration.
+"""
+enum AccountingCashCurrencyTypeChoices {
+  """
+  Soles
+  """
+  S
+
+  """
+  Euros
+  """
+  E
+
+  """
+  Dolares
+  """
+  D
+}
+
+type CashFlowType {
+  id: ID!
+
+  cash: CashType
+
+  user: CustomUserType
+
+  operation: OperationType
+
+  supplier: ClientDataType
+
+  transactionDate: Date
+
+  transactionType: AccountingCashFlowTransactionTypeChoices!
+
+  bankOperationCode: String
+
+  documentTypeAttached: AccountingCashFlowDocumentTypeAttachedChoices!
+
+  description: String
+
+  subtotal: Decimal!
+
+  igv: Decimal!
+
+  total: Decimal!
+
+  remainingTotal: Decimal!
+
+  createdAt: DateTime
+
+  isValidated: Boolean!
+
+  userId: Int
+
+  userName: String
+
+  formattedDate: String
+}
+
+"""
+An enumeration.
+"""
+enum AccountingCashFlowTransactionTypeChoices {
+  """
+  Apertura
+  """
+  A
+
+  """
+  Cierre
+  """
+  C
+
+  """
+  Entrada
+  """
+  E
+
+  """
+  Salida
+  """
+  S
+
+  """
+  Transferencia de Caja a Caja
+  """
+  TCC
+
+  """
+  Transferencia de Caja a Banco
+  """
+  TCB
+
+  """
+  Transferencia de Banco a Banco
+  """
+  TBB
+
+  """
+  Transferencia de Banco a Caja
+  """
+  TBC
+
+  """
+  Deposito
+  """
+  D
+
+  """
+  Retiro
+  """
+  R
+
+  """
+  DEBE
+  """
+  DC
+
+  """
+  HABER
+  """
+  HC
+}
+
+"""
+An enumeration.
+"""
+enum AccountingCashFlowDocumentTypeAttachedChoices {
+  """
+  Factura
+  """
+  F
+
+  """
+  Boleta
+  """
+  B
+
+  """
+  Ticket
+  """
+  T
+
+  """
+  Vale
+  """
+  V
+
+  """
+  Otro
+  """
+  O
+}
+
+"""
+An enumeration.
+"""
+enum UsersCustomUserRoleChoices {
+  """
+  ENCARGADO DE LOGISTICA
+  """
+  A_01
+
+  """
+  REPRESENTANTE DE VENTAS
+  """
+  A_02
+
+  """
+  CONDUCTOR DE REPARTO
+  """
+  A_03
+
+  """
+  ENCARGADO ADMINISTRATIVO
+  """
+  A_04
+}
+
+type RouteType {
+  id: Int
+
+  gang: GangType
+
+  routeType: DistributionsRouteRouteTypeChoices!
+
+  routeDate: Date
+
+  status: DistributionsRouteStatusChoices!
+
+  correlative: Int!
+
+  serial: String
+
+  workers: [CustomUserType!]!
+
+  parentRoute: RouteType
+
+  routeSet: [RouteType!]!
+
+  dailyrouteSet: [DailyRouteType!]!
+
+  statusReadable: String
+
+  totalWeighingOfDispatchedOrders: Float
+
+  totalDispatchedOrders: Float
+
+  totalPointsOfSale: Int
+}
+
+type GangType {
+  id: Int
+
+  truck: TruckType
+
+  name: String
+
+  visitDay: DayType
+
+  dispatchDay: DayType
+
+  routeSet: [RouteType!]!
+
+  gangdetailSet: [GangDetailsType!]!
+
+  truckId: Int
+
+  truckLicensePlate: String
+
+  truckBrand: String
+
+  truckOwnerName: String
+
+  truckDriverId: Int
+
+  truckDriverName: String
+
+  truckDriverCode: String
+
+  truckDriverDrivingLicense: String
+
+  truckCapacity: String
+
+  gangDetail: [GangDetailsType]
+
+  hasGangDetail: Boolean
+
+  visitDayId: Int
+
+  visitDayName: String
+
+  dispatchDayId: Int
+
+  dispatchDayName: String
+
+  hasRoute: Boolean
+}
+
+type DayType {
+  id: Int!
+
+  name: String
+
+  color: String
+
+  personaddressSet: [PersonAddressType!]!
+
+  visits: [GangType!]!
+
+  dispatches: [GangType!]!
+
+  zonecenterSet: [ZoneCenterType!]!
+
+  value: Boolean
+}
+
+type PersonAddressType {
+  id: Int
+
+  address: String
+
+  latitude: Float
+
+  longitude: Float
+
+  person: ClientDataType
+
+  district: DistrictType
+
+  zoneCenter: ZoneCenterType
+
+  days: [DayType!]!
+
+  isActive: Boolean
+
+  dailyrouteSet: [DailyRouteType!]!
+
+  pinCode: Float
+
+  zoneCenterId: Int
+
+  zoneCenterCode: String
+
+  zoneCenterName: String
+
+  zoneCenterUserName: String
+
+  districtId: String
+
+  districtName: String
+
+  provinceId: String
+
+  provinceName: String
+
+  departmentId: String
+
+  departmentName: String
+
+  addressId: Int
+}
+
+type DistrictType {
+  id: String!
+
+  description: String
+
+  personaddressSet: [PersonAddressType!]!
+}
+
+type ZoneCenterType {
+  id: Int
+
+  code: String
+
+  name: String
+
+  color: String
+
+  day: DayType
+
+  latitude: Float
+
+  longitude: Float
+
+  user: CustomUserType
+
+  personaddressSet: [PersonAddressType!]!
+
+  dailyrouteSet: [DailyRouteType!]!
+
+  zonepointSet: [ZoneCenterPointType!]!
+
+  userId: Int
+
+  userNames: String
+
+  dayId: Int
+
+  dayName: String
+
+  dayColor: String
+
+  zonePoints: [ZoneCenterPointType]
+
+  totalQuantityOfClients: Int
+}
+
+type DailyRouteType {
+  id: ID!
+
+  status: DistributionsDailyRouteStatusChoices!
+
+  zoneCenter: ZoneCenterType
+
+  route: RouteType
+
+  personAddress: PersonAddressType
+
+  operation: OperationType
+
+  observation: String
+
+  isEnabled: Boolean!
+
+  userWhoCanceled: CustomUserType
+
+  userWhoConfirmed: CustomUserType
+
+  stops: [OperationType!]!
+}
+
+"""
+An enumeration.
+"""
+enum DistributionsDailyRouteStatusChoices {
+  """
+  PENDIENTE
+  """
+  A_01
+
+  """
+  COMPLETADO
+  """
+  A_02
+
+  """
+  SIN ORDENAR
+  """
+  A_03
+
+  """
+  ENVIO PENDIENTE
+  """
+  A_04
+
+  """
+  ENVIADO
+  """
+  A_05
+
+  """
+  ENTREGADO CONFORME
+  """
+  A_06
+
+  """
+  ENVIO FALLIDO
+  """
+  A_07
+
+  """
+  ENVIO ANULADO
+  """
+  A_08
+}
+
+type ZoneCenterPointType {
+  id: Int
+
+  latitude: Float
+
+  longitude: Float
+
+  zoneCenter: ZoneCenterType
+
+  zoneCenterId: Int
+
+  zoneCenterName: String
+
+  index: Int
+}
+
+type GangDetailsType {
+  id: Int
+
+  employee: CustomUserType
+
+  gang: GangType
+
+  teamRol: String
+
+  employeeId: Int
+
+  employeeName: String
+
+  teamRolName: String
+
+  index: Int
+}
+
+"""
+An enumeration.
+"""
+enum DistributionsRouteRouteTypeChoices {
+  """
+  PREVENTA
+  """
+  A_1
+
+  """
+  REPARTO
+  """
+  A_2
+
+  """
+  COBRANZA REPARTIDOR
+  """
+  A_3
+
+  """
+  COBRANZA VENDEDOR
+  """
+  A_4
+}
+
+"""
+An enumeration.
+"""
+enum DistributionsRouteStatusChoices {
+  """
+  PROGRAMADO
+  """
+  P
+
+  """
+  GENERADO
+  """
+  G
+
+  """
+  APROBADO
+  """
+  B
+
+  """
+  FINALIZADO
+  """
+  F
+
+  """
+  ANULADO
+  """
+  A
+}
+
+"""
+An enumeration.
+"""
+enum OperationsOperationOperationActionChoices {
+  """
+  ENTRADA
+  """
+  E
+
+  """
+  SALIDA
+  """
+  S
+
+  """
+  NO APLICA
+  """
+  NA
+}
+
+"""
+An enumeration.
+"""
+enum OperationsOperationOperationStatusChoices {
+  """
+  GENERADO
+  """
+  A_01
+
+  """
+  APROBADO
+  """
+  A_02
+
+  """
+  ANULADO
+  """
+  A_03
+
+  """
+  SIN EMISION
+  """
+  A_04
+
+  """
+  EMITIDO
+  """
+  A_05
+
+  """
+  DESPACHADO
+  """
+  A_06
+
+  """
+  NO APLICA
+  """
+  NA
+}
+
+"""
+An enumeration.
+"""
+enum OperationsOperationOperationTypeChoices {
+  """
+  ORDEN DE COMPRA
+  """
+  A_01
+
+  """
+  ORDEN DE VENTA
+  """
+  A_02
+
+  """
+  COMPRA
+  """
+  A_03
+
+  """
+  VENTA
+  """
+  A_04
+
+  """
+  REPARTO - ABASTECIMIENTO
+  """
+  A_05
+
+  """
+  REPARTO - DEVOLUCION
+  """
+  A_06
+
+  """
+  NOTING
+  """
+  A_07
+
+  """
+  NOTSAL
+  """
+  A_08
+
+  """
+  AJUSTE DE INGRESO
+  """
+  A_09
+
+  """
+  AJUSTE DE SALIDA
+  """
+  A_10
+
+  """
+  TRANSFERENCIA
+  """
+  A_11
+
+  """
+  NO APLICA
+  """
+  NA
+}
+
+"""
+An enumeration.
+"""
+enum OperationsOperationParentTypeChoices {
+  """
+  ORDEN DE COMPRA
+  """
+  A_01
+
+  """
+  ORDEN DE VENTA
+  """
+  A_02
+
+  """
+  COMPRA
+  """
+  A_03
+
+  """
+  VENTA
+  """
+  A_04
+
+  """
+  REPARTO - ABASTECIMIENTO
+  """
+  A_05
+
+  """
+  REPARTO - DEVOLUCION
+  """
+  A_06
+
+  """
+  NOTING
+  """
+  A_07
+
+  """
+  NOTSAL
+  """
+  A_08
+
+  """
+  AJUSTE DE INGRESO
+  """
+  A_09
+
+  """
+  AJUSTE DE SALIDA
+  """
+  A_10
+
+  """
+  TRANSFERENCIA
+  """
+  A_11
+
+  """
+  NO APLICA
+  """
+  NA
+}
+
+"""
+An enumeration.
+"""
+enum OperationsOperationReferralDocumentTypeChoices {
+  """
+  GUIA DE REMISION
+  """
+  A_01
+
+  """
+  FACTURA
+  """
+  A_02
+
+  """
+  NOTA DE AJUSTE S
+  """
+  A_03
+
+  """
+  NO APLICA
+  """
+  NA
+}
+
+type MotiveType {
+  id: ID!
+
+  action: OperationsMotiveActionChoices!
+
+  name: String
+
+  isEnabled: Boolean!
+
+  operationSet: [OperationType!]!
+}
+
+"""
+An enumeration.
+"""
+enum OperationsMotiveActionChoices {
+  """
+  INGRESO
+  """
+  E
+
+  """
+  SALIDA
+  """
+  S
+
+  """
+  REAJUSTE
+  """
+  R
+
+  """
+  TRANFERENCIA
+  """
+  T
+
+  """
+  NO APLICA
+  """
+  NA
+}
+
+"""
+An enumeration.
+"""
+enum OperationsOperationCurrencyChoices {
+  """
+  SOLES
+  """
+  S
+
+  """
+  DOLARES
+  """
+  D
+
+  """
+  NO APLICA
+  """
+  NA
+}
+
+"""
+An enumeration.
+"""
+enum LogisticsProductActiveTypeChoices {
+  """
+  PRODUCTO
+  """
+  A_01
+
+  """
+  REGALO
+  """
+  A_02
+
+  """
+  NO APLICA
+  """
+  NA
+}
+
+type UnitType {
+  id: ID!
+
+  shortName: String
+
+  description: String
+
+  code: String
+
+  minimumUnits: [ProductType!]!
+
+  maximumUnits: [ProductType!]!
+
+  producttariffSet: [ProductTariffType!]!
+}
+
+type OverdueDebtRuleType {
+  id: ID!
+
+  paymentType: AccountingOverdueDebtRulePaymentTypeChoices!
+
+  sanctionType: AccountingOverdueDebtRuleSanctionTypeChoices!
+
+  criteria: AccountingOverdueDebtRuleCriteriaChoices!
+
+  typeTrade: TypeTradeType
+
+  valueMinimum: Decimal!
+
+  valueMaximum: Decimal
+
+  createdAt: DateTime!
+
+  updatedAt: DateTime!
+
+  paymentTypeReadable: String
+
+  sanctionTypeReadable: String
+
+  criteriaReadable: String
+
+  typeTradeId: Int
+
+  typeTradeName: String
+}
+
+"""
+An enumeration.
+"""
+enum AccountingOverdueDebtRulePaymentTypeChoices {
+  """
+  CONTADO
+  """
+  A_1
+
+  """
+  CREDITO
+  """
+  A_2
+}
+
+"""
+An enumeration.
+"""
+enum AccountingOverdueDebtRuleSanctionTypeChoices {
+  """
+  EN OBSERVACION
+  """
+  A_1
+
+  """
+  SUSPENSIÓN DE CREDITO
+  """
+  A_2
+
+  """
+  BLOQUEO DE VENTA
+  """
+  A_3
+}
+
+"""
+An enumeration.
+"""
+enum AccountingOverdueDebtRuleCriteriaChoices {
+  """
+  ENTRE
+  """
+  A_1
+
+  """
+  MAYOR QUE
+  """
+  A_2
+
+  """
+  MAYOR O IGUAL QUE
+  """
+  A_3
+}
+
+type PersonType {
+  id: Int
+
+  code: String
+
+  economicActivityMain: OperationsPersonEconomicActivityMainChoices!
+
+  economicActivitySecondary1: OperationsPersonEconomicActivitySecondary1Choices!
+
+  documentType: OperationsPersonDocumentTypeChoices!
+
+  documentNumber: String
+
+  names: String
+
+  phone: String
+
+  email: String
+
+  isEnabled: Boolean!
+
+  isClient: Boolean!
+
+  isSupplier: Boolean!
+
+  nationality: String
+
+  creditLine: Decimal!
+
+  businessType: BusinessTypeType
+
+  typeTrade: TypeTradeType
+
+  shortName: String
+
+  sequence: Int
+
+  observation: String
+
+  isBlocked: Boolean!
+
+  isSuspended: Boolean!
+
+  isObserved: Boolean!
+
+  personaddressSet: [PersonAddressType!]!
+
+  clients: [OperationType!]!
+
+  suppliers: [OperationType!]!
+
+  truckSet: [TruckType!]!
+
+  productlineSet: [ProductLineType!]!
+
+  bonusdetailSet: [BonusDetailType!]!
+
+  supplierAccount: [CashType!]!
+
+  clientAccount: [CashType!]!
+
+  cashflowSet: [CashFlowType!]!
+
+  businessTypeId: Int
+
+  businessTypeName: String
+
+  documentTypeReadable: String
+
+  economicActivityMainReadable: String
+
+  economicActivitySecondary1Readable: String
+
+  typeTradeId: Int
+
+  typeTradeName: String
+
+  personAddress: [PersonAddressType]
+
+  addressId: Int
+
+  creditDebt: Float
+
+  checked: Boolean
+
+  debt: Float
+}
+
+type DailyGenerateRouteType {
+  routeId: Int
+
+  routeDailyRouteId: Int
+
+  routePersonId: Int
+
+  routePersonCode: String
+
+  routePersonNames: String
+
+  routePersonPhone: String
+
+  routePersonDocumentTypeReadable: String
+
+  routePersonDocumentNumber: String
+
+  routePersonIsBlocked: Boolean
+
+  routePersonIsSuspended: Boolean
+
+  routePersonIsObserved: Boolean
+
+  routeAddressId: Int
+
+  routeAddress: String
+
+  routeDayId: Int
+
+  routeDayName: String
+
+  routeDayColor: String
+
+  routePinCode: Float
+
+  routeLatitude: Float
+
+  routeLongitude: Float
+
+  routeDistrictId: Int
+
+  routeDistrictName: String
+
+  routeStatus: String
+
+  routeStatusDisplay: String
+
+  routeObservation: String
+
+  routeDate: Date
+
+  routeType: String
+
+  routeOperationId: Int
+
+  routeDailyRouteIsEnabled: Boolean
+
+  routePersonTypeTradeId: Int
+
+  routePersonTypeTradeName: String
+
+  routePersonBusinessTypeName: String
+}
+
+type CreatedRouteType {
+  routeOfVisit: RouteType
+
+  routeOfDispatch: RouteType
+
+  routeOfRecoveryOfPayments: RouteType
+
+  issuedOrders: [OperationType]
+
+  dispatchedOrders: [OperationType]
+
+  dispatchedCommodities: [CommoditySupplierType]
+}
+
+type CommoditySupplierType {
+  supplierName: String
+
+  groupedProducts: [CommodityProductType]
+}
+
+type CommodityProductType {
+  productCode: String
+
+  productName: String
+
+  productUnit: String
+
+  productQuantity: Float
+
+  productQuantityMaximum: Float
+
+  productQuantityFraction: Float
+
+  productTruckStock: Float
+}
+
+type ProvinceType {
+  id: String!
+
+  description: String
+}
+
+type DepartmentType {
+  id: String!
+
+  description: String
+}
+
+type NationalityType {
+  name: String
+}
+
+type ProductTariffByTradeType {
+  productTariffId: Int
+
+  typeTradeId: Int
+
+  typeTradeName: String
+
+  unitId: Int
+
+  unitName: String
+
+  purchasePrice1: Float
+
+  cashSalePrice: Float
+
+  creditSalePrice: Float
+
+  creditPercentage: Float
+
+  quantityMinimum: Float
+}
+
+type InventoryType {
+  detailOperations: [OperationDetailType]
+
+  lastDetailOperation: OperationDetailType
+}
+
+type ProductGiftDataType {
+  productGiftId: Int
+
+  productGiftTariffId: Int
+
+  productGiftCode: String
+
+  productGiftName: String
+
+  productGiftActiveType: String
+
+  cashPrice: Float
+
+  totalQuantityGift: Float
+
+  unitGiftId: Int
+
+  unitGiftName: String
+
+  unitGiftDescription: String
+
+  bonusId: Int
+
+  bonusConjunction: Int
+}
+
+input ProductEvalInput {
+  productId: Int
+
+  quantity: Int
+
+  subtotal: Float
+}
+
+type DiscountGiftDataType {
+  productIds: [Int!]
+
+  totalDiscountGift: Float
+
+  bonusId: Int
+
+  bonusConjunction: Int
+}
+
+type Mutation {
+  createTruck(brand: String, capacity: Float, description: String, driverId: Int, isEnabled: Boolean, licensePlate: String, ownerId: Int, ownership: String, version: String): CreateTruckMutation
+
+  updateTruck(brand: String, capacity: Float, description: String, driverId: Int, id: ID!, isEnabled: Boolean, licensePlate: String, ownerId: Int, ownership: String, version: String): UpdateTruckMutation
+
+  generateRoute(gangSet: [Int], routeDate: Date, routeType: Int): GenerateRouteMutation
+
+  deleteDailyRoute(id: ID!): DeleteDailyRouteMutation
+
+  createZone(code: String, color: String, dayId: Int, latitude: Float, longitude: Float, name: String, points: [ZonePointType], userId: Int): CreateZoneCenterMutation
+
+  updateZone(code: String, color: String, dayId: Int, id: ID!, latitude: Float, longitude: Float, name: String, points: [ZonePointType], userId: Int): UpdateZoneCenterMutation
+
+  createGang(dispatchDayId: Int, gangDetails: [GangDetailType], name: String, truckId: Int, visitDayId: Int): CreateGangMutation
+
+  updateGang(dispatchDayId: Int, gangDetails: [GangDetailType], id: ID!, name: String, truckId: Int, visitDayId: Int): UpdateGangMutation
+
+  deleteGangDetail(id: ID!): DeleteGangDetailMutation
+
+  generateVisitDayInAddress: GenerateVisitDayInAddressMutation
+
+  generateRandomCoordinatesInAddress: GenerateRandomCoordinatesInAddressMutation
+
+  createCashFlow(description: String, subsidiaryId: Int, total: Float, transactionDate: String, transactionType: String, userId: Int): CreateCashFlowMutation
+
+  deleteCashFlow(id: ID!): DeleteCashFlowMutation
+
+  createOrder(addressId: String, baseCost: Float, bonusIds: [Int!], clientId: String, dailyRouteId: String, discountAmounts: [Float!], discountCost: Float, discountPercentages: [Float!], exoneratedCost: Float, freeCost: Float, igvCost: Float, perceptionCost: Float, prices: [Float!], productTariffIds: [Int!], quantities: [Int!], selectedDocumentType: String, selectedPaymentType: String, totalSale: Float, totalToPay: Float, typeTradeId: String, userId: String): CreateOrderMutation
+
+  updateOrder(baseAmountDiscount: Float, baseAmountPerception: Float, baseCost: Float, documentTypeToGenerate: String, exoneratedCost: Float, freeCost: Float, id: ID!, igvCost: Float, orderDetails: [InputOrderDetailType], paymentType: Int, shippingDate: String, totalSale: Float, userId: Int): UpdateOrderMutation
+
+  withoutOrder(dailyRouteId: String, observation: String, userId: String): WithOutOrderMutation
+
+  approveOrder(id: ID!, userId: Int): ApproveOrderMutation
+
+  cancelOrder(id: ID!, userId: Int): CancelOrderMutation
+
+  createPayment(operationId: Int, total: Float, userId: Int): CreatePaymentMutation
+
+  deletePayment(id: Int): DeletePaymentMutation
+
+  createOverdueDebtRule(criteria: Int, paymentType: Int, sanctionType: Int, typeTradeId: Int, valueMaximum: Float, valueMinimum: Float): CreateOverdueDebtRuleMutation
+
+  sendSunatOrders(orderIds: [Int!]): SendSunatOrdersMutation
+
+  sendToDispatchOrders(gangId: Int, orderIds: [Int!], routeDate: Date, warehouseId: Int): SendToDispatchOrdersMutation
+
+  registerPayments(orderWithDebtIds: [Int!], payments: [Float!]): RegisterPaymentsMutation
+
+  createCreditNote(id: ID!, isExpired: Boolean, orderDetails: [InputOrderDetailType], paymentType: Int): CreateCreditNoteMutation
+
+  cancelDispatchedOrder(id: ID!): CancelDispatchedOrderMutation
+
+  endRoute(routeId: ID!): EndRouteMutation
+
+  generateCollectionSheet(date: Date, sellerId: Int): GenerateCollectionSheetMutation
+
+  createOperation(addressId: Int, baseAmountDiscount: Float, baseAmountPerception: Float, baseCost: Float, basePercentageDiscount: Float, clientId: Int, documentNumber: String, documentType: String, exoneratedCost: Float, freeCost: Float, igvCost: Float, operationAction: String, operationDate: String, operationDetail: [OperationDetailsType], operationStatus: String, operationType: String, paymentType: String, shippingDate: String, totalSale: Float, userId: Int, warehouseId: Int): CreateOperationMutation
+
+  updateOperation(addressId: Int, baseAmountDiscount: Float, baseAmountPerception: Float, baseCost: Float, basePercentageDiscount: Float, clientId: Int, documentNumber: String, documentType: String, exoneratedCost: Float, freeCost: Float, id: ID!, igvCost: Float, operationAction: String, operationDate: String, operationDetail: [OperationDetailsType], operationStatus: String, operationType: String, paymentType: String, shippingDate: String, totalSale: Float, userId: Int, warehouseId: Int): UpdateOperationMutation
+
+  createClient(addresses: [ClientAddressType], businessTypeId: Int, code: String, creditLine: Float, documentNumber: String, documentType: String, email: String, isClient: Boolean, isEnabled: Boolean, names: String, nationality: String, observation: String, phone: String, sequence: Int, typeTradeId: Int): CreateClientMutation
+
+  updateClient(addresses: [ClientAddressType], businessTypeId: Int, code: String, creditLine: Float, documentNumber: String, documentType: String, email: String, id: ID!, isClient: Boolean, isEnabled: Boolean, names: String, nationality: String, observation: String, phone: String, sequence: Int, typeTradeId: Int): UpdateClientMutation
+
+  updateClientAddress(id: ID!, latitude: Float, longitude: Float): UpdateClientAddressMutation
+
+  createPresale(documentNumber: String, observation: String): CreatePresaleMutation
+
+  updatePresale(documentNumber: String, id: ID!, observation: String): UpdatePresaleMutation
+
+  sntPerson(document: String): SntMutation
+
+  createWarehouse(category: String, name: String, subsidiaryId: Int, truckLicensePlate: String): CreateWarehouseMutation
+
+  updateWarehouse(category: String, id: ID!, name: String, subsidiaryId: Int, truckLicensePlate: String): UpdateWarehouseMutation
+
+  createProduct(activeType: String, available: Boolean, code: String, deactivationReason: String, ean: String, exemptFromIgv: Boolean, maximumFactor: Float, maximumUnitId: Int, minimumFactor: Float, minimumUnitId: Int, name: String, observation: String, subLineId: Int, subjectPerception: Boolean, weightInKilograms: Float): CreateProductMutation
+
+  deleteProduct(id: ID!): DeleteProductMutation
+
+  updateProduct(activeType: String, available: Boolean, code: String, deactivationReason: String, ean: String, exemptFromIgv: Boolean, id: ID!, maximumFactor: Float, maximumUnitId: Int, minimumFactor: Float, minimumUnitId: Int, name: String, observation: String, subLineId: Int, subjectPerception: Boolean, weightInKilograms: Float): UpdateProductMutation
+
+  createUnit(code: String, description: String, shortName: String): CreateUnitMutation
+
+  updateUnit(code: String, description: String, id: ID!, shortName: String): UpdateUnitMutation
+
+  createProductTariff(cashSalePrice: Float, creditSalePrice: Float, productId: Int, quantityMinimum: Float, unitId: Int): CreateProductTariffMutation
+
+  deleteProductTariff(id: ID!): DeleteProductTariffMutation
+
+  createSupplier(address: String, code: String, districtId: String, documentNumber: String, documentType: String, economicActivityMain: Int, economicActivitySecondary1: Int, email: String, isEnabled: Boolean, names: String, nationality: String, phone: String): CreateSupplierMutation
+
+  updateSupplier(address: String, code: String, districtId: String, documentNumber: String, documentType: String, economicActivityMain: Int, economicActivitySecondary1: Int, email: String, id: ID!, isEnabled: Boolean, names: String, nationality: String, phone: String): UpdateSupplierMutation
+
+  createProductLine(code: String, name: String, supplierId: Int): CreateProductLineMutation
+
+  updateProductLine(code: String, id: ID!, name: String, supplierId: Int): UpdateProductLineMutation
+
+  createProductSubLine(code: String, lineId: Int, name: String): CreateProductSubLineMutation
+
+  updateProductSubLine(code: String, id: ID!, lineId: Int, name: String): UpdateProductSubLineMutation
+
+  createEntry(baseCost: Float, correlative: Int, currency: String, entryDetails: [InputEntryDetailType], exchangeRate: Float, glossary: String, igvCost: Float, motiveId: Int, operationDate: String, operationStatus: String, referralCorrelative: Int, referralDocumentType: String, referralOperationDate: String, referralSerial: String, serial: String, supplierCode: String, supplierDocumentNumber: String, supplierName: String, totalSale: Float, typeOfMerchandise: Int, userId: Int, warehouseId: Int): CreateEntryMutation
+
+  updateEntry(baseCost: Float, correlative: Int, currency: String, entryDetails: [InputEntryDetailType], exchangeRate: Float, glossary: String, id: ID!, igvCost: Float, motiveId: Int, operationDate: String, operationStatus: String, referralCorrelative: Int, referralDocumentType: String, referralOperationDate: String, referralSerial: String, serial: String, supplierCode: String, supplierDocumentNumber: String, supplierName: String, totalSale: Float, userId: Int, warehouseId: Int): UpdateEntryMutation
+
+  deleteDetailEntry(id: ID!): DeleteDetailEntryMutation
+
+  authorizeEntry(id: ID!): AuthorizeEntryMutation
+
+  cancelEntry(id: ID!): CancelEntryMutation
+
+  updateProductTariffWithTypeTrade(cashSalePrice: Float, creditPercentage: Float, creditSalePrice: Float, productTariffId: Int, purchasePrice1: Float): UpdateProductTariffWithTypeTradeMutation
+
+  createBonus(ambit: Int, bonusDetails: [InputBonusDetailType], conjunction: Int, criteria: Int, discount: Float, endDate: Date, gift: Int, name: String, only: Int, productGiftId: Int, quantityGift: Float, startDate: Date, typeBonus: Int, typeTradeId: Int, value: Float, valueMaximum: Float, valueMinimum: Float): CreateBonusMutation
+
+  updateBonus(ambit: Int, bonusDetails: [InputBonusDetailType], conjunction: Int, criteria: Int, discount: Float, endDate: Date, gift: Int, id: Int, name: String, only: Int, productGiftId: Int, quantityGift: Float, startDate: Date, typeBonus: Int, typeTradeId: Int, value: Float, valueMaximum: Float, valueMinimum: Float): UpdateBonusMutation
+
+  generateSheet(dispatchDate: Date, truckId: Int, zoneCenterId: Int): GenerateSheetMutation
+
+  deleteBonusDetail(id: ID!): DeleteBonusDetailMutation
+
+  createAdjustEntry(baseCost: Float, correlative: Int, entryDetails: [InputEntryDetailType], glossary: String, igvCost: Float, motiveId: Int, operationDate: String, operationStatus: String, referralCorrelative: Int, referralDocumentType: String, referralOperationDate: String, referralSerial: String, serial: String, totalSale: Float, userId: Int, warehouseId: Int): CreateAdjustEntryMutation
+
+  updateAdjustEntry(baseCost: Float, entryDetails: [InputEntryDetailType], glossary: String, id: ID!, igvCost: Float, motiveId: Int, operationDate: String, operationStatus: String, referralCorrelative: Int, referralDocumentType: String, referralOperationDate: String, referralSerial: String, totalSale: Float, userId: Int, warehouseId: Int): UpdateAdjustEntryMutation
+
+  authorizeAdjustEntry(id: ID!): AuthorizeAdjustEntryMutation
+
+  cancelAdjustEntry(id: ID!): CancelAdjustEntryMutation
+
+  createAdjustDeparture(baseCost: Float, correlative: Int, entryDetails: [InputEntryDetailType], glossary: String, igvCost: Float, motiveId: Int, operationDate: String, operationStatus: String, referralCorrelative: Int, referralDocumentType: String, referralOperationDate: String, referralSerial: String, serial: String, totalSale: Float, userId: Int, warehouseId: Int): CreateAdjustDepartureMutation
+
+  updateAdjustDeparture(baseCost: Float, entryDetails: [InputEntryDetailType], glossary: String, id: ID!, igvCost: Float, motiveId: Int, operationDate: String, operationStatus: String, referralCorrelative: Int, referralDocumentType: String, referralOperationDate: String, referralSerial: String, totalSale: Float, userId: Int, warehouseId: Int): UpdateAdjustDepartureMutation
+
+  authorizeAdjustDeparture(id: ID!): AuthorizeAdjustDepartureMutation
+
+  cancelAdjustDeparture(id: ID!): CancelAdjustDepartureMutation
+
+  createTransfer(baseCost: Float, entryDetails: [InputEntryDetailType], glossary: String, igvCost: Float, operationDate: String, totalSale: Float, userId: Int, warehouseId: Int): CreateTransferMutation
+
+  updateTransfer(baseCost: Float, entryDetails: [InputEntryDetailType], glossary: String, id: ID!, igvCost: Float, operationDate: String, totalSale: Float, userId: Int, warehouseId: Int): UpdateTransferMutation
+
+  authorizeTransfer(id: ID!): AuthorizeTransferMutation
+
+  cancelTransfer(id: ID!): CancelTransferMutation
+
+  tokenAuth(email: String!, password: String!): ObtainJSONWebToken
+
+  verifyToken(token: String): Verify
+
+  refreshToken(refreshToken: String): Refresh
+
+  revokeToken(refreshToken: String): Revoke
+
+  createCompany(name: String): CreateCompanyMutation
+
+  updateCompany(id: ID!, name: String): UpdateCompanyMutation
+
+  createSubsidiary(companyId: Int, name: String): CreateSubsidiaryMutation
+
+  updateSubsidiary(companyId: Int, id: ID!, name: String): UpdateSubsidiaryMutation
+
+  createUser(address: String, birthDate: String, code: String, document: String, drivingLicense: String, email: String, endDate: String, firstName: String, isActive: Boolean, lastName: String, names: String, password: String, phone: String, phoneOfRelative: String, remuneration: Float, role: String, startDate: String, subsidiaryId: Int): CreateUserMutation
+
+  updateUser(address: String, birthDate: String, code: String, document: String, drivingLicense: String, email: String, endDate: String, firstName: String, id: ID!, isActive: Boolean, lastName: String, password: String, phone: String, phoneOfRelative: String, remuneration: Float, role: String, startDate: String, subsidiaryId: Int): UpdateUserMutation
+}
+
+type CreateTruckMutation {
+  message: String
+}
+
+type UpdateTruckMutation {
+  message: String
+}
+
+type GenerateRouteMutation {
+  message: String
+
+  route: [DailyGenerateRouteType]
+}
+
+type DeleteDailyRouteMutation {
+  message: String
+}
+
+type CreateZoneCenterMutation {
+  message: String
+}
+
+input ZonePointType {
+  id: Int
+
+  latitude: Float
+
+  longitude: Float
+
+  zoneCenterId: Int
+
+  zoneCenterName: String
+
+  index: Int
+}
+
+type UpdateZoneCenterMutation {
+  message: String
+}
+
+type CreateGangMutation {
+  message: String
+}
+
+input GangDetailType {
+  id: Int
+
+  employeeId: Int
+
+  employeeName: String
+
+  teamRol: String
+
+  teamRolName: String
+
+  index: Int
+}
+
+type UpdateGangMutation {
+  message: String
+}
+
+type DeleteGangDetailMutation {
+  message: String
+}
+
+type GenerateVisitDayInAddressMutation {
+  message: String
+}
+
+type GenerateRandomCoordinatesInAddressMutation {
+  message: String
+}
+
+type CreateCashFlowMutation {
+  message: String
+}
+
+type DeleteCashFlowMutation {
+  message: String
+}
+
+type CreateOrderMutation {
+  message: String
+}
+
+type UpdateOrderMutation {
+  message: String
+}
+
+input InputOrderDetailType {
+  id: Int
+
+  priceWithIgv: Float
+
+  quantity: Float
+
+  productId: Int
+
+  productName: String
+
+  productCode: String
+
+  productExemptFromIgv: Boolean
+
+  productActiveType: String
+
+  productSubjectPerception: Boolean
+
+  priceWithoutIgv: Float
+
+  percentageDiscount: Float
+
+  amountDiscount: Float
+
+  amountPerception: Float
+
+  productTariffId: Int
+
+  unitName: String
+
+  temporaryId: Int
+
+  currentStock: Float
+
+  subtotal: Float
+
+  quantityReturned: Float = 0
+
+  quantityAvailable: Float = 0
+}
+
+type WithOutOrderMutation {
+  message: String
+}
+
+type ApproveOrderMutation {
+  message: String
+}
+
+type CancelOrderMutation {
+  message: String
+}
+
+type CreatePaymentMutation {
+  message: String
+}
+
+type DeletePaymentMutation {
+  message: String
+}
+
+type CreateOverdueDebtRuleMutation {
+  message: String
+}
+
+type SendSunatOrdersMutation {
+  message: String
+}
+
+type SendToDispatchOrdersMutation {
+  message: String
+}
+
+type RegisterPaymentsMutation {
+  message: String
+}
+
+type CreateCreditNoteMutation {
+  message: String
+}
+
+type CancelDispatchedOrderMutation {
+  message: String
+}
+
+type EndRouteMutation {
+  message: String
+}
+
+type GenerateCollectionSheetMutation {
+  message: String
+
+  route: RouteType
+}
+
+type CreateOperationMutation {
+  success: Boolean
+
+  message: String
+}
+
+input OperationDetailsType {
+  id: Int
+
+  index: Int
+
+  operationId: Int
+
+  productTariffId: Int
+
+  price: Float
+
+  totalDiscountItem: Float
+
+  quantity: Float
+
+  igv: Float
+
+  total: Float
+
+  remainingQuantity: Float
+
+  remainingPrice: Float
+
+  remainingPriceTotal: Float
+
+  batchCode: Int
+
+  batchStock: Float
+
+  batchPrice: Float
+
+  batchPriceTotal: Float
+
+  productId: Int
+
+  productCode: String
+
+  productName: String
+
+  unitId: Int
+
+  unitName: String
+
+  unitDescription: String
+
+  priceWithIgv: Float
+
+  priceWithoutIgv: Float
+
+  percentageDiscount: Float
+
+  amountDiscount: Float
+
+  amountPerception: Float
+
+  exemptFromIgv: Boolean
+
+  subjectPerception: Boolean
+
+  productExemptFromIgv: Boolean
+
+  productActiveType: String
+
+  temporalId: Int
+
+  temporaryId: Int
+
+  currentStock: Float
+
+  bonusId: Int
+
+  bonusConjunction: Int
+
+  productPurchaseId: Int
+}
+
+type UpdateOperationMutation {
+  success: Boolean
+
+  message: String
+}
+
+type CreateClientMutation {
+  message: String
+
+  success: Boolean
+}
+
+input ClientAddressType {
+  id: Int
+
+  address: String
+
+  latitude: Float
+
+  longitude: Float
+
+  pinCode: Float
+
+  zoneCenterId: Int
+
+  zoneCenterCode: String
+
+  zoneCenterName: String
+
+  districtId: String
+
+  districtName: String
+
+  provinceId: String
+
+  provinceName: String
+
+  departmentId: String
+
+  departmentName: String
+
+  days: [SelectedDayType]
+
+  isActive: Boolean
+}
+
+input SelectedDayType {
+  id: Int
+
+  name: String
+
+  value: Boolean
+
+  color: String
+}
+
+type UpdateClientMutation {
+  message: String
+
+  success: Boolean
+}
+
+type UpdateClientAddressMutation {
+  message: String
+
+  success: Boolean
+}
+
+type CreatePresaleMutation {
+  message: String
+
+  success: Boolean
+}
+
+type UpdatePresaleMutation {
+  message: String
+
+  success: Boolean
+}
+
+type SntMutation {
+  message: String
+
+  success: Boolean
+
+  person: PersonSunatType
+}
+
+type PersonSunatType {
+  sntDocument: String
+
+  sntNames: String
+
+  sntAddress: String
+}
+
+type CreateWarehouseMutation {
+  message: String
+}
+
+type UpdateWarehouseMutation {
+  message: String
+}
+
+type CreateProductMutation {
+  message: String
+}
+
+type DeleteProductMutation {
+  message: String
+}
+
+type UpdateProductMutation {
+  message: String
+}
+
+type CreateUnitMutation {
+  message: String
+}
+
+type UpdateUnitMutation {
+  message: String
+}
+
+type CreateProductTariffMutation {
+  productTariff: ProductTariffType
+
+  message: String
+}
+
+type DeleteProductTariffMutation {
+  message: String
+}
+
+type CreateSupplierMutation {
+  message: String
+}
+
+type UpdateSupplierMutation {
+  message: String
+}
+
+type CreateProductLineMutation {
+  message: String
+}
+
+type UpdateProductLineMutation {
+  message: String
+}
+
+type CreateProductSubLineMutation {
+  message: String
+}
+
+type UpdateProductSubLineMutation {
+  message: String
+}
+
+type CreateEntryMutation {
+  message: String
+}
+
+input InputEntryDetailType {
+  id: Int
+
+  productEan: String
+
+  productCode: String
+
+  unitMinName: String
+
+  unitName: String
+
+  productName: String
+
+  productTariffId: Int
+
+  maximumFactor: Float
+
+  oldPrice: Float
+
+  quantity: String
+
+  newPrice: String
+
+  subtotal: String
+
+  temporaryId: Int
+
+  expireDate: String
+
+  productCodeBonus: String = ""
+
+  productNameBonus: String = ""
+
+  productBonusId: Int = 0
+}
+
+type UpdateEntryMutation {
+  message: String
+}
+
+type DeleteDetailEntryMutation {
+  message: String
+}
+
+type AuthorizeEntryMutation {
+  message: String
+}
+
+type CancelEntryMutation {
+  message: String
+}
+
+type UpdateProductTariffWithTypeTradeMutation {
+  message: String
+}
+
+type CreateBonusMutation {
+  message: String
+}
+
+input InputBonusDetailType {
+  id: Int
+
+  productPurchasedId: Int
+
+  productPurchasedCode: String
+
+  productPurchasedName: String
+
+  supplierId: Int
+
+  supplierName: String
+
+  lineId: Int
+
+  lineName: String
+
+  subLineId: Int
+
+  subLineName: String
+}
+
+type UpdateBonusMutation {
+  message: String
+}
+
+type GenerateSheetMutation {
+  message: String
+
+  sheet: RouteType
+}
+
+type DeleteBonusDetailMutation {
+  message: String
+}
+
+type CreateAdjustEntryMutation {
+  message: String
+}
+
+type UpdateAdjustEntryMutation {
+  message: String
+}
+
+type AuthorizeAdjustEntryMutation {
+  message: String
+}
+
+type CancelAdjustEntryMutation {
+  message: String
+}
+
+type CreateAdjustDepartureMutation {
+  message: String
+}
+
+type UpdateAdjustDepartureMutation {
+  message: String
+}
+
+type AuthorizeAdjustDepartureMutation {
+  message: String
+}
+
+type CancelAdjustDepartureMutation {
+  message: String
+}
+
+type CreateTransferMutation {
+  message: String
+}
+
+type UpdateTransferMutation {
+  message: String
+}
+
+type AuthorizeTransferMutation {
+  message: String
+}
+
+type CancelTransferMutation {
+  message: String
+}
+
+type ObtainJSONWebToken {
+  payload: GenericScalar!
+
+  refreshExpiresIn: Int!
+
+  user: CustomUserType
+
+  token: String!
+
+  refreshToken: String!
+}
+
+"""
+The `GenericScalar` scalar type represents a generic
+GraphQL scalar value that could be:
+String, Boolean, Int, Float, List or Object.
+"""
+scalar GenericScalar
+
+type Verify {
+  payload: GenericScalar!
+}
+
+type Refresh {
+  payload: GenericScalar!
+
+  refreshExpiresIn: Int!
+
+  token: String!
+
+  refreshToken: String!
+}
+
+type Revoke {
+  revoked: Int!
+}
+
+type CreateCompanyMutation {
+  message: String
+}
+
+type UpdateCompanyMutation {
+  message: String
+}
+
+type CreateSubsidiaryMutation {
+  message: String
+}
+
+type UpdateSubsidiaryMutation {
+  message: String
+}
+
+type CreateUserMutation {
+  message: String
+}
+
+type UpdateUserMutation {
+  message: String
+}
+
+"""
+A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, as well as the entry points for query, mutation, and subscription operations.
+"""
+type __Schema {
+  description: String
+
+  """
+  A list of all types supported by this server.
+  """
+  types: [__Type!]!
+
+  """
+  The type that query operations will be rooted at.
+  """
+  queryType: __Type!
+
+  """
+  If this server supports mutation, the type that mutation operations will be rooted at.
+  """
+  mutationType: __Type
+
+  """
+  If this server support subscription, the type that subscription operations will be rooted at.
+  """
+  subscriptionType: __Type
+
+  """
+  A list of all directives supported by this server.
+  """
+  directives: [__Directive!]!
+}
+
+"""
+The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.
+
+Depending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByURL`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.
+"""
+type __Type {
+  kind: __TypeKind!
+
+  name: String
+
+  description: String
+
+  specifiedByURL: String
+
+  fields(includeDeprecated: Boolean = false): [__Field!]
+
+  interfaces: [__Type!]
+
+  possibleTypes: [__Type!]
+
+  enumValues(includeDeprecated: Boolean = false): [__EnumValue!]
+
+  inputFields(includeDeprecated: Boolean = false): [__InputValue!]
+
+  ofType: __Type
+}
+
+"""
+An enum describing what kind of type a given `__Type` is.
+"""
+enum __TypeKind {
+  """
+  Indicates this type is a scalar.
+  """
+  SCALAR
+
+  """
+  Indicates this type is an object. `fields` and `interfaces` are valid fields.
+  """
+  OBJECT
+
+  """
+  Indicates this type is an interface. `fields`, `interfaces`, and `possibleTypes` are valid fields.
+  """
+  INTERFACE
+
+  """
+  Indicates this type is a union. `possibleTypes` is a valid field.
+  """
+  UNION
+
+  """
+  Indicates this type is an enum. `enumValues` is a valid field.
+  """
+  ENUM
+
+  """
+  Indicates this type is an input object. `inputFields` is a valid field.
+  """
+  INPUT_OBJECT
+
+  """
+  Indicates this type is a list. `ofType` is a valid field.
+  """
+  LIST
+
+  """
+  Indicates this type is a non-null. `ofType` is a valid field.
+  """
+  NON_NULL
+}
+
+"""
+Object and Interface types are described by a list of Fields, each of which has a name, potentially a list of arguments, and a return type.
+"""
+type __Field {
+  name: String!
+
+  description: String
+
+  args(includeDeprecated: Boolean = false): [__InputValue!]!
+
+  type: __Type!
+
+  isDeprecated: Boolean!
+
+  deprecationReason: String
+}
+
+"""
+Arguments provided to Fields or Directives and the input fields of an InputObject are represented as Input Values which describe their type and optionally a default value.
+"""
+type __InputValue {
+  name: String!
+
+  description: String
+
+  type: __Type!
+
+  """
+  A GraphQL-formatted string representing the default value for this input value.
+  """
+  defaultValue: String
+
+  isDeprecated: Boolean!
+
+  deprecationReason: String
+}
+
+"""
+One possible value for a given Enum. Enum values are unique values, not a placeholder for a string or numeric value. However an Enum value is returned in a JSON response as a string.
+"""
+type __EnumValue {
+  name: String!
+
+  description: String
+
+  isDeprecated: Boolean!
+
+  deprecationReason: String
+}
+
+"""
+A Directive provides a way to describe alternate runtime execution and type validation behavior in a GraphQL document.
+
+In some cases, you need to provide options to alter GraphQL's execution behavior in ways field arguments will not suffice, such as conditionally including or skipping a field. Directives provide this by describing additional information to the executor.
+"""
+type __Directive {
+  name: String!
+
+  description: String
+
+  isRepeatable: Boolean!
+
+  locations: [__DirectiveLocation!]!
+
+  args(includeDeprecated: Boolean = false): [__InputValue!]!
+}
+
+"""
+A Directive can be adjacent to many parts of the GraphQL language, a __DirectiveLocation describes one such possible adjacencies.
+"""
+enum __DirectiveLocation {
+  """
+  Location adjacent to a query operation.
+  """
+  QUERY
+
+  """
+  Location adjacent to a mutation operation.
+  """
+  MUTATION
+
+  """
+  Location adjacent to a subscription operation.
+  """
+  SUBSCRIPTION
+
+  """
+  Location adjacent to a field.
+  """
+  FIELD
+
+  """
+  Location adjacent to a fragment definition.
+  """
+  FRAGMENT_DEFINITION
+
+  """
+  Location adjacent to a fragment spread.
+  """
+  FRAGMENT_SPREAD
+
+  """
+  Location adjacent to an inline fragment.
+  """
+  INLINE_FRAGMENT
+
+  """
+  Location adjacent to a variable definition.
+  """
+  VARIABLE_DEFINITION
+
+  """
+  Location adjacent to a schema definition.
+  """
+  SCHEMA
+
+  """
+  Location adjacent to a scalar definition.
+  """
+  SCALAR
+
+  """
+  Location adjacent to an object type definition.
+  """
+  OBJECT
+
+  """
+  Location adjacent to a field definition.
+  """
+  FIELD_DEFINITION
+
+  """
+  Location adjacent to an argument definition.
+  """
+  ARGUMENT_DEFINITION
+
+  """
+  Location adjacent to an interface definition.
+  """
+  INTERFACE
+
+  """
+  Location adjacent to a union definition.
+  """
+  UNION
+
+  """
+  Location adjacent to an enum definition.
+  """
+  ENUM
+
+  """
+  Location adjacent to an enum value definition.
+  """
+  ENUM_VALUE
+
+  """
+  Location adjacent to an input object type definition.
+  """
+  INPUT_OBJECT
+
+  """
+  Location adjacent to an input object field definition.
+  """
+  INPUT_FIELD_DEFINITION
+}
+
+"""
+Directs the executor to include this field or fragment only when the `if` argument is true.
+"""
+directive @include ("Included when true." if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
+
+"""
+Directs the executor to skip this field or fragment when the `if` argument is true.
+"""
+directive @skip ("Skipped when true." if: Boolean!) on FIELD|FRAGMENT_SPREAD|INLINE_FRAGMENT
+
+"""
+Marks an element of a GraphQL schema as no longer supported.
+"""
+directive @deprecated ("Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax, as specified by [CommonMark](https:\/\/commonmark.org\/)." reason: String = "No longer supported") on FIELD_DEFINITION|ARGUMENT_DEFINITION|INPUT_FIELD_DEFINITION|ENUM_VALUE
+
+"""
+Exposes a URL that specifies the behaviour of this scalar.
+"""
+directive @specifiedBy ("The URL that specifies the behaviour of this scalar." url: String!) on SCALAR
+
+schema {
+  query: Query
+  mutation: Mutation
+}

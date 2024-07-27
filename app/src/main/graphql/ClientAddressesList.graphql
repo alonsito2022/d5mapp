@@ -1,0 +1,14 @@
+query ClientAddressesList($id: Int!){
+    addressesByClientId(clientId: $id){
+        id
+        address
+        latitude
+        longitude
+        districtId
+        districtName
+        provinceId
+        provinceName
+        departmentId
+        departmentName
+    }
+}

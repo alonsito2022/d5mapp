@@ -1,0 +1,13 @@
+query OrderWithDebtListByClient($clientId: Int!){
+    accountStatusByClient(clientId: $clientId){
+        id
+        documentNumber
+        documentTypeReadable
+        totalSale
+        totalPaid
+        totalPending
+        expirationDays
+        shippingDate
+        operationDate
+    }
+}

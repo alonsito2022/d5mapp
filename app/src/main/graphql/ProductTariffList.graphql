@@ -1,0 +1,18 @@
+query ProductTariffList {
+    allProductTariffs {
+        id
+        productId
+        productName
+        productCode
+        productActiveType
+        unitId
+        unitName
+        cashSalePrice
+        creditSalePrice
+        isSelected
+        cashSalePriceWithoutIgv
+        creditSalePriceWithoutIgv
+        stock
+        quantity
+    }
+}

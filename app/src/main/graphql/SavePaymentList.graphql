@@ -1,0 +1,11 @@
+mutation SavePaymentList(
+    $orderWithDebtIds: [Int!],
+    $payments: [Float!]
+){
+    registerPayments(
+        orderWithDebtIds: $orderWithDebtIds,
+        payments: $payments
+    ) {
+        message
+    }
+}

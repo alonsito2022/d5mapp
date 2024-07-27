@@ -1,0 +1,5 @@
+mutation UpdateWithoutOrder($userId: String!, $observation: String!, $dailyRouteId: String!){
+    withoutOrder(userId:$userId, observation: $observation, dailyRouteId: $dailyRouteId){
+        message
+    }
+}

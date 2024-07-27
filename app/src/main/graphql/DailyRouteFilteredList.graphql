@@ -1,0 +1,35 @@
+query DailyRouteFilteredList($userId: Int!, $truckId: Int!, $visitDate: String!){
+    dailyRoutesByCriteria(userId:$userId, gangId:$truckId, visitDate:$visitDate){
+        routeId
+        routeDailyRouteId
+        routePersonId
+        routePersonCode
+        routePersonNames
+        routePersonPhone
+        routePersonDocumentTypeReadable
+        routePersonDocumentNumber
+        routePersonIsBlocked
+        routePersonIsSuspended
+        routePersonIsObserved
+        routeAddressId
+        routeAddress
+        routeDayId
+        routeDayName
+        routeDayColor
+        routePinCode
+        routeLatitude
+        routeLongitude
+        routeDistrictId
+        routeDistrictName
+        routeStatus
+        routeStatusDisplay
+        routeObservation
+        routeDate
+        routeType
+        routeOperationId
+        routeDailyRouteIsEnabled
+        routePersonTypeTradeId
+        routePersonTypeTradeName
+        routePersonBusinessTypeName
+    }
+}

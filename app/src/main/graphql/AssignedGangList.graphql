@@ -1,0 +1,10 @@
+query AssignedGangList($userId: Int!, $visitDate: Date!){
+    assignedGangsByUserId(userId:$userId, visitDate: $visitDate){
+        id
+        truckId
+        truckLicensePlate
+        name
+        visitDayId
+        visitDayName
+    }
+}

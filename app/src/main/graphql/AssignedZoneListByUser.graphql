@@ -1,0 +1,12 @@
+query AssignedZoneListByUser($userId: Int!, $visitDate: Date!){
+    assignedZonesByUserId(userId:$userId, visitDate: $visitDate){
+        id
+        name
+        color
+        code
+        userId
+        latitude
+        longitude
+        totalQuantityOfClients
+    }
+}

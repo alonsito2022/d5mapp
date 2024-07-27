@@ -1,0 +1,22 @@
+query ProductTariffFilteredList($searchQuery: String!, $searchBy: String!, $typeTradeId: Int!) {
+    searchProductTariffsByCriteria(searchQuery: $searchQuery, searchBy: $searchBy, typeTradeId: $typeTradeId) {
+        id
+        productId
+        productName
+        productCode
+        productActiveType
+        unitId
+        unitName
+        cashSalePrice
+        creditSalePrice
+        cashSalePriceWithoutIgv
+        creditSalePriceWithoutIgv
+        isSelected
+        stock
+        quantity
+        typeTradeId
+        typeTradeName
+        exemptFromIgv
+        subjectPerception
+    }
+}

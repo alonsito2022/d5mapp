@@ -1,0 +1,11 @@
+query ZoneListByGang($gangId: Int!){
+    zonesByGangId(gangId:$gangId){
+        id
+        name
+        code
+        color
+        latitude
+        longitude
+        userId
+    }
+}

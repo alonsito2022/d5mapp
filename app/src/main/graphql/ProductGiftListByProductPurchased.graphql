@@ -1,0 +1,18 @@
+query ProductGiftListByProductPurchased($productPurchasedId: Int!, $typeTradeId: Int!, $quantity: Float!){
+    productGiftsByProductPurchasedId(
+        productPurchasedId:$productPurchasedId, typeTradeId:$typeTradeId, quantity:$quantity
+    ){
+        productGiftId
+        productGiftCode
+        productGiftName
+        cashPrice
+        totalQuantityGift
+        productGiftActiveType
+        productGiftTariffId
+        unitGiftId
+        unitGiftName
+        unitGiftDescription
+        bonusId
+        bonusConjunction
+    }
+}

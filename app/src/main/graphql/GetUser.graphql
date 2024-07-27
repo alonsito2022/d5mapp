@@ -1,0 +1,11 @@
+query GetUser($userId: ID!){
+    userById(pk:$userId){
+        username
+        roleReadable
+        phone
+        document
+        address
+        firstName
+        lastName
+    }
+}
