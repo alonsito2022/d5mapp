@@ -3,7 +3,9 @@ package com.example.d5mandroidapp.data.services
 import com.apollographql.apollo3.ApolloClient
 import com.example.d5mandroidapp.SaveOrderMutation
 import com.example.d5mandroidapp.UpdateWithoutOrderMutation
+import com.example.d5mandroidapp.GeneratedOrderListQuery
 import com.example.d5mandroidapp.data.models.Message
+import com.example.d5mandroidapp.data.models.Operation
 import com.example.d5mandroidapp.data.models.Order
 import com.example.d5mandroidapp.data.models.WithoutOrder
 import com.example.d5mandroidapp.data.network.OrderApiClient
@@ -54,6 +56,21 @@ class OrderService(
             .data
             ?.withoutOrder
             ?.message
+    }
+
+    override suspend fun getGeneratedOrderList(
+        searchDate: String,
+        employeeId: Int,
+        operationStatus: String
+    ): List<Operation> {
+        return apolloClient.query(GeneratedOrderListQuery(
+            searchDate, employeeId, operationStatus
+        ))
+            .execute()
+            .data
+            ?.salesByEmployee
+            ?.map { it!!.toOperation() }
+            ?: emptyList()
     }
 
 }

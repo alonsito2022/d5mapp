@@ -6,7 +6,7 @@ import com.example.d5mandroidapp.data.network.PaymentApiClient
 class SavePaymentListUseCase(
     private val paymentApiClient: PaymentApiClient
 ) {
-    suspend fun execute(orderWithDebtIds: Optional<List<Int>?>, payments: Optional<List<Double>?>): String? {
-        return paymentApiClient.savePaymentList(orderWithDebtIds, payments)
+    suspend fun execute(orderWithDebtIds: Optional<List<Int>?>, payments: Optional<List<Double>?>, userId: Int): String? {
+        return paymentApiClient.savePaymentList(orderWithDebtIds, payments, userId)
     }
 }

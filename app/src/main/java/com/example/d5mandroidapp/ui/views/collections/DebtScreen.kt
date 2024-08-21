@@ -1,5 +1,6 @@
 package com.example.d5mandroidapp.ui.views.collections
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +30,7 @@ import androidx.navigation.NavController
 import com.example.d5mandroidapp.data.states.ClientState
 import com.example.d5mandroidapp.data.states.SaleOrderState
 import com.example.d5mandroidapp.navigation.Screens
+import com.example.d5mandroidapp.storage.UserRepositoryImpl
 import com.example.d5mandroidapp.ui.theme.GreenJC
 import com.example.d5mandroidapp.ui.viewmodels.ClientViewModel
 import com.example.d5mandroidapp.ui.viewmodels.OrderViewModel
@@ -40,10 +42,17 @@ fun DebtScreen(navController: NavController, clientId: String?){
     val clientViewModel: ClientViewModel = hiltViewModel()
     val clientState by clientViewModel.state.collectAsState()
     val context = LocalContext.current
+    val userRepository = UserRepositoryImpl(context)
 
     if (clientId != null) {
+        Log.d("D5MAP","clientId: $clientId")
         clientViewModel.setClient(clientId)
+        userRepository.getUserId()?.let {
+            Log.d("D5MAP","UserId: $it")
+            clientViewModel.setUser(it.toInt())
+        }
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()

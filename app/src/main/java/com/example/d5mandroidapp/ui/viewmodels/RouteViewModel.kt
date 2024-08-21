@@ -211,7 +211,7 @@ class RouteViewModel @Inject constructor(
                 dailyRoutes = getDailyRoutesByCriteriaUseCase.execute(
                     state.value.userId,
                     state.value.gangId,
-                    state.value.visitDate,
+                    state.value.visitDate,"",""
                 ).filter { it.routeDailyRouteIsEnabled },
                 isLoading = false
             ) }

@@ -5,4 +5,6 @@ interface UserRepository {
     fun getUserId(): String?
     fun setUserEmail(email: String?)
     fun getUserEmail(): String?
+    fun clearUserId()
+    fun clearUserEmail()
 }

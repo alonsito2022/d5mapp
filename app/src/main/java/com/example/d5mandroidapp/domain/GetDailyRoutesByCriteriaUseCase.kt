@@ -6,7 +6,7 @@ import com.example.d5mandroidapp.data.network.RouteApiClient
 class GetDailyRoutesByCriteriaUseCase(
     private val routeApiClient: RouteApiClient
 ) {
-    suspend fun execute(userId: Int, gangId: Int, visitDate: String): List<DailyRoute>{
-        return routeApiClient.getDailyRoutesByCriteria(userId, gangId, visitDate).sortedBy { it.routeDailyRouteId }
+    suspend fun execute(userId: Int, gangId: Int, visitDate: String, searchQuery: String, searchBy: String): List<DailyRoute>{
+        return routeApiClient.getDailyRoutesByCriteria(userId, gangId, visitDate, searchQuery, searchBy).sortedBy { it.routeDailyRouteId }
     }
 }

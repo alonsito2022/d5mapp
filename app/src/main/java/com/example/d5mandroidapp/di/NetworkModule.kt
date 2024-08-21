@@ -6,6 +6,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.okHttpClient
 import com.example.d5mandroidapp.apollo.ApolloClientProvider
+import com.example.d5mandroidapp.apollo.ApolloClientUpdater
 import com.example.d5mandroidapp.apollo.ApolloConfig
 import com.example.d5mandroidapp.apollo.AuthorizationInterceptor
 import com.example.d5mandroidapp.data.network.ClientApiClient
@@ -29,6 +30,7 @@ import com.example.d5mandroidapp.domain.GetClientWithDebtByIdUseCase
 import com.example.d5mandroidapp.domain.GetClientsFilteredUseCase
 import com.example.d5mandroidapp.domain.GetDailyRoutesByCriteriaUseCase
 import com.example.d5mandroidapp.domain.GetDiscountGiftsByProductsPurchasedUseCase
+import com.example.d5mandroidapp.domain.GetGeneratedOrderUseCase
 import com.example.d5mandroidapp.domain.GetOrdersWithDebtByClientIdUseCase
 import com.example.d5mandroidapp.domain.GetProductGiftsByProductPurchasedIdUseCase
 import com.example.d5mandroidapp.domain.GetProductGiftsByProductsPurchasedUseCase
@@ -38,10 +40,12 @@ import com.example.d5mandroidapp.domain.GetSimpleAddressesByClientIdUseCase
 import com.example.d5mandroidapp.domain.GetUserByIdUseCase
 import com.example.d5mandroidapp.domain.GetZonePointsByZoneIdUseCase
 import com.example.d5mandroidapp.domain.GetZonesByGangIdUseCase
+import com.example.d5mandroidapp.domain.RemoveRefreshTokenUseCase
 import com.example.d5mandroidapp.domain.SaveOrderUseCase
 import com.example.d5mandroidapp.domain.SavePaymentListUseCase
 import com.example.d5mandroidapp.domain.UpdateWithoutOrderUseCase
 import com.example.d5mandroidapp.domain.VerifyTokenUseCase
+import com.example.d5mandroidapp.storage.TokenRepository
 import com.example.d5mandroidapp.storage.TokenRepositoryImpl
 import com.google.android.gms.location.LocationServices
 import dagger.Module
@@ -75,6 +79,15 @@ object NetworkModule {
             )
             .build()
     }
+
+//    @Provides
+//    @Singleton
+//    fun provideApolloClientUpdater(
+//        tokenRepository: TokenRepository,
+//        @ApplicationContext context: Context
+//    ): ApolloClientUpdater {
+//        return ApolloClientUpdater(tokenRepository, context)
+//    }
 
     @Provides
     @Singleton
@@ -167,6 +180,11 @@ object NetworkModule {
     fun provideUpdateWithoutOrderUseCase(orderApiClient: OrderApiClient): UpdateWithoutOrderUseCase {
         return UpdateWithoutOrderUseCase(orderApiClient)
     }
+    @Provides
+    @Singleton
+    fun provideGetGeneratedOrderUseCase(orderApiClient: OrderApiClient): GetGeneratedOrderUseCase {
+        return GetGeneratedOrderUseCase(orderApiClient)
+    }
 
     @Singleton
     @Provides
@@ -235,6 +253,12 @@ object NetworkModule {
     @Singleton
     fun provideSavePaymentListUseCase(paymentApiClient: PaymentApiClient): SavePaymentListUseCase {
         return SavePaymentListUseCase(paymentApiClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRemoveRefreshTokenUseCase(userApiClient: UserApiClient): RemoveRefreshTokenUseCase {
+        return RemoveRefreshTokenUseCase(userApiClient)
     }
 
 }

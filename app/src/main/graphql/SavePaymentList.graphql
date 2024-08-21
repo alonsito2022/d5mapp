@@ -1,10 +1,12 @@
 mutation SavePaymentList(
     $orderWithDebtIds: [Int!],
-    $payments: [Float!]
+    $payments: [Float!],
+    $userID: Int!
 ){
     registerPayments(
         orderWithDebtIds: $orderWithDebtIds,
-        payments: $payments
+        payments: $payments,
+        userId: $userID
     ) {
         message
     }

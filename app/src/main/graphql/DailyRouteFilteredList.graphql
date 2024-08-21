@@ -1,5 +1,5 @@
-query DailyRouteFilteredList($userId: Int!, $truckId: Int!, $visitDate: String!){
-    dailyRoutesByCriteria(userId:$userId, gangId:$truckId, visitDate:$visitDate){
+query DailyRouteFilteredList($userId: Int!, $truckId: Int!, $visitDate: String!, $searchQuery: String!, $searchBy: String!){
+    dailyRoutesByCriteria(userId:$userId, gangId:$truckId, visitDate:$visitDate, searchQuery:$searchQuery, searchBy:$searchBy){
         routeId
         routeDailyRouteId
         routePersonId

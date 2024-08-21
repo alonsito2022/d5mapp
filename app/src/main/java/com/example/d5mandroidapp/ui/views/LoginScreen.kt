@@ -58,7 +58,7 @@ fun LoginScreen(navigateToProfile: () -> Unit){
 
     val context = LocalContext.current
 
-    var email by remember { mutableStateOf("mario_luis@gmail.com") }
+    var email by remember { mutableStateOf("paola_vanessa@gmail.com") }
     var password by remember { mutableStateOf("123456") }
     var loading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()

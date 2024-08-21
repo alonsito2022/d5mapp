@@ -24,9 +24,10 @@ data class UserState(
 
     val gangName: String = "",
     val zoneCenterName: String = "",
-    val dailyRoutes: List<DailyRoute> = listOf(),
+//    val dailyRoutes: List<DailyRoute> = listOf(),
     var filteredDailyRoutes: List<DailyRoute> = emptyList(),
     var showSearchPanel: Boolean = false,
+    var isOffline: Boolean = false,
 
 ) {
 }

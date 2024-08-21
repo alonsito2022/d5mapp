@@ -10,5 +10,5 @@ interface RouteApiClient {
     suspend fun getAssignedZonesByUserId(userId: Int, visitDate: String): List<Zone>
     suspend fun getAssignedGangsByUserId(userId: Int, visitDate: String): List<Gang>
     suspend fun getZonesByGangId(gangId: Int): List<Zone>
-    suspend fun getDailyRoutesByCriteria(userId: Int, gangId: Int, visitDate: String): List<DailyRoute>
+    suspend fun getDailyRoutesByCriteria(userId: Int, gangId: Int, visitDate: String, searchQuery: String, searchBy: String): List<DailyRoute>
 }

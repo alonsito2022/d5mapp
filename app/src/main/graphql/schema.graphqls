@@ -23,6 +23,10 @@ type Query {
 
   gangById(pk: ID): GangType
 
+  routePayments(type: Int, serial: String, correlative: String): RouteType
+
+  routesByDate(type: Int, date: Date): [RouteType]
+
   cashFlowOperationsByDates(startDate: Date, endDate: Date, subsidiaryId: ID): [CashFlowType]
 
   searchClientsByCriteria(searchQuery: String, searchBy: String): [PersonType]
@@ -39,19 +43,19 @@ type Query {
 
   assignedGangsByUserId(userId: Int, visitDate: Date): [GangType]
 
-  dailyRoutesByCriteria(userId: Int, gangId: Int, visitDate: String): [DailyGenerateRouteType]
+  dailyRoutesByCriteria(userId: Int, gangId: Int, visitDate: String, searchQuery: String, searchBy: String): [DailyGenerateRouteType]
 
   ordersInDailyRoutesByCriteria(searchDate: String, gangId: Int, status: String): [DailyRouteType]
 
   ordersWithoutApprovalByCriteria(searchDate: String, gangId: Int, employeeId: Int): [OperationType]
 
+  preSalesByCriteria(searchDate: String, gangId: Int, employeeId: Int, operationStatus: String): [OperationType]
+
+  salesByEmployee(searchDate: String, employeeId: Int, operationStatus: String): [OperationType]
+
   approvedOrdersByCriteria(searchDate: String, gangId: Int, employeeId: Int): [OperationType]
 
   ordersByCriteria(startDate: Date, endDate: Date): [OperationType]
-
-  createdRouteAndIssuedOrdersByCriteria(searchDate: String, gangId: Int): CreatedRouteType
-
-  dispatchedOrdersByCriteria(routeId: Int): [OperationType]
 
   stockInProductsInWarehouseByCriteria(dispatchDate: String, warehouseId: Int): [ProductType]
 
@@ -71,6 +75,18 @@ type Query {
 
   cashesByType(type: String): [CashType]
 
+  routeOfVisitAndApprovedOrdersByCriteria(searchDate: String, gangId: Int): CreatedRouteType
+
+  dispatchedOrdersByRouteOfDispatch(routeId: Int): [OperationType]
+
+  generatedRoutesOfDispatch(routeDate: Date): [RouteType]
+
+  operationSetByClientAndDates(type: String, value: String, document: String, startDate: Date, endDate: Date): [OperationType]
+
+  cashFlowByOperationId(operationId: Int): [CashFlowType]
+
+  cashFlowSetByOperationId(operationId: Int): [CashFlowType]
+
   persons: [PersonType]
 
   clientsByZoneId(zoneId: Int): [PersonType]
@@ -83,7 +99,7 @@ type Query {
 
   allClients: [PersonType]
 
-  clientsByUserId(userId: Int): [PersonType]
+  clientsByUserId(userId: Int, visitDate: Date): [PersonType]
 
   clientsBySaleCenter(saleCenterId: Int): [PersonType]
 
@@ -115,6 +131,14 @@ type Query {
 
   saleById(pk: Int): OperationType
 
+  clientsByFilter(type: String, value: String): [PersonType]
+
+  pendingSalesByClientAndDates(startDate: Date, endDate: Date, paymentType: Int, clientId: Int): [OperationType]
+
+  pendingSalesBySellerAndDates(startDate: Date, endDate: Date, paymentType: Int, sellerId: Int): [OperationType]
+
+  pendingSalesBySellerAndSupplierAndDates(startDate: Date, endDate: Date, paymentType: Int, sellerId: Int, supplierId: Int): [OperationType]
+
   unitById(pk: ID): UnitType
 
   warehouseById(pk: ID): WarehouseType
@@ -136,6 +160,8 @@ type Query {
   entryById(pk: ID): OperationType
 
   allSuppliers(productLineId: Int): [PersonType]
+
+  allClientsBySeller(sellerId: Int): [PersonType]
 
   allLines(supplierId: Int): [ProductLineType]
 
@@ -168,6 +194,8 @@ type Query {
   adjustedDeparturesByDates(startDate: Date, endDate: Date, warehouseId: Int, operationStatus: String): [OperationType]
 
   transfersByDates(startDate: Date, endDate: Date, warehouseId: Int, operationStatus: String): [OperationType]
+
+  guidesByDates(startDate: Date, endDate: Date, warehouseId: Int, operationStatus: String): [OperationType]
 
   regularizationOperations(warehouseId: ID, productId: ID, startDate: Date, endDate: Date): InventoryType
 
@@ -229,6 +257,8 @@ type TruckType {
 
   capacity: Decimal!
 
+  operationSet: [OperationType!]!
+
   gangSet: [GangType!]!
 
   warehouseSet: [WarehouseType!]!
@@ -244,6 +274,12 @@ type TruckType {
   driverId: Int
 
   driverName: String
+
+  driverDrivingLicense: String
+
+  warehouseId: Int
+
+  warehouseName: String
 }
 
 """
@@ -269,6 +305,11 @@ enum DistributionsTruckOwnershipChoices {
   ALQUILADO
   """
   A_02
+
+  """
+  TERCERO
+  """
+  A_03
 
   """
   NO APLICA
@@ -321,6 +362,12 @@ type ClientDataType {
 
   isObserved: Boolean!
 
+  supplierAccount: [CashType!]!
+
+  clientAccount: [CashType!]!
+
+  cashflowSet: [CashFlowType!]!
+
   personaddressSet: [PersonAddressType!]!
 
   clients: [OperationType!]!
@@ -332,12 +379,6 @@ type ClientDataType {
   productlineSet: [ProductLineType!]!
 
   bonusdetailSet: [BonusDetailType!]!
-
-  supplierAccount: [CashType!]!
-
-  clientAccount: [CashType!]!
-
-  cashflowSet: [CashFlowType!]!
 
   debt: Float
 
@@ -460,19 +501,111 @@ type TypeTradeType {
 
   cashAndCreditBlock: Int!
 
+  overduedebtruleSet: [OverdueDebtRuleType!]!
+
   personSet: [ClientDataType!]!
 
   producttariffSet: [ProductTariffType!]!
 
   bonusSet: [BonusType!]!
-
-  overduedebtruleSet: [OverdueDebtRuleType!]!
 }
 
 """
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
 """
 scalar Int
+
+type OverdueDebtRuleType {
+  id: ID!
+
+  paymentType: AccountingOverdueDebtRulePaymentTypeChoices!
+
+  sanctionType: AccountingOverdueDebtRuleSanctionTypeChoices!
+
+  criteria: AccountingOverdueDebtRuleCriteriaChoices!
+
+  typeTrade: TypeTradeType
+
+  valueMinimum: Decimal!
+
+  valueMaximum: Decimal
+
+  createdAt: DateTime!
+
+  updatedAt: DateTime!
+
+  paymentTypeReadable: String
+
+  sanctionTypeReadable: String
+
+  criteriaReadable: String
+
+  typeTradeId: Int
+
+  typeTradeName: String
+}
+
+"""
+An enumeration.
+"""
+enum AccountingOverdueDebtRulePaymentTypeChoices {
+  """
+  CONTADO
+  """
+  A_1
+
+  """
+  CREDITO
+  """
+  A_2
+}
+
+"""
+An enumeration.
+"""
+enum AccountingOverdueDebtRuleSanctionTypeChoices {
+  """
+  EN OBSERVACION
+  """
+  A_1
+
+  """
+  SUSPENSIÓN DE CREDITO
+  """
+  A_2
+
+  """
+  BLOQUEO DE VENTA
+  """
+  A_3
+}
+
+"""
+An enumeration.
+"""
+enum AccountingOverdueDebtRuleCriteriaChoices {
+  """
+  ENTRE
+  """
+  A_1
+
+  """
+  MAYOR QUE
+  """
+  A_2
+
+  """
+  MAYOR O IGUAL QUE
+  """
+  A_3
+}
+
+"""
+The `DateTime` scalar type represents a DateTime
+value as specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar DateTime
 
 type ProductTariffType {
   id: Int
@@ -782,13 +915,6 @@ The `Float` scalar type represents signed double-precision fractional values as 
 """
 scalar Float
 
-"""
-The `DateTime` scalar type represents a DateTime
-value as specified by
-[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
-"""
-scalar DateTime
-
 type OperationDetailType {
   id: Int
 
@@ -1004,13 +1130,23 @@ type OperationType {
 
   dailyRoute: DailyRouteType
 
+  hasChangedPaymentToCredit: Boolean!
+
+  departureAddress: PersonAddressType
+
+  arrivalAddress: PersonAddressType
+
+  truck: TruckType
+
+  transferDate: Date
+
+  cashflowSet: [CashFlowType!]!
+
   operationSet: [OperationType!]!
 
   operationdetailSet: [OperationDetailType!]!
 
   dailyrouteSet: [DailyRouteType!]!
-
-  cashflowSet: [CashFlowType!]!
 
   dayNameResult: String
 
@@ -1134,11 +1270,31 @@ type OperationType {
 
   creditNoteDocumentNumbers: [String!]
 
+  totalToPay: Float
+
+  totalOfCreditNote: Float
+
+  totalNet: Float
+
   totalCredit: Float
 
   totalPayedCreditValidated: Float
 
   totalPayedCreditNotValidated: Float
+
+  totalPayedNotValidated: Float
+
+  totalPayedValidated: Float
+
+  totalDebtAnnotation: Float
+
+  totalDaysDelay: Int
+
+  counterOfSuppliers: Int
+
+  costBySupplier: Float
+
+  totalPendingBySupplier: Float
 }
 
 """
@@ -1211,7 +1367,7 @@ enum OperationsOperationDocumentTypeToGenerateChoices {
   A_10
 
   """
-  HOJA DE VISITAS
+  NOTA DE CREDITO POR FUERA
   """
   A_11
 
@@ -1296,7 +1452,7 @@ enum OperationsOperationDocumentTypeChoices {
   A_10
 
   """
-  HOJA DE VISITAS
+  NOTA DE CREDITO POR FUERA
   """
   A_11
 
@@ -1390,6 +1546,10 @@ type CustomUserType {
 
   drivingLicense: String
 
+  employeeAccount: [CashType!]!
+
+  cashflowSet: [CashFlowType!]!
+
   whoRegisters: [OperationType!]!
 
   whoCancels: [OperationType!]!
@@ -1397,6 +1557,16 @@ type CustomUserType {
   whoAuthorizes: [OperationType!]!
 
   routeSet: [RouteType!]!
+
+  collectors: [RouteType!]!
+
+  generates: [RouteType!]!
+
+  cancels: [RouteType!]!
+
+  authorizes: [RouteType!]!
+
+  liquidates: [RouteType!]!
 
   theOneWhoCancels: [DailyRouteType!]!
 
@@ -1407,10 +1577,6 @@ type CustomUserType {
   gangdetailSet: [GangDetailsType!]!
 
   zonecenterSet: [ZoneCenterType!]!
-
-  employeeAccount: [CashType!]!
-
-  cashflowSet: [CashFlowType!]!
 
   subsidiaryId: Int
 
@@ -1434,11 +1600,11 @@ type SubsidiaryType {
 
   company: CompanyType
 
+  cashSet: [CashType!]!
+
   warehouseSet: [WarehouseType!]!
 
   customuserSet: [CustomUserType!]!
-
-  cashSet: [CashType!]!
 
   companyId: Int
 }
@@ -1449,55 +1615,6 @@ type CompanyType {
   name: String!
 
   subsidiarySet: [SubsidiaryType!]!
-}
-
-type WarehouseType {
-  id: ID!
-
-  name: String
-
-  subsidiary: SubsidiaryType
-
-  truck: TruckType
-
-  category: LogisticsWarehouseCategoryChoices!
-
-  operationSet: [OperationType!]!
-
-  categoryReadable: String
-
-  subsidiaryId: Int
-
-  subsidiaryName: String
-
-  truckId: Int
-
-  truckLicensePlate: String
-}
-
-"""
-An enumeration.
-"""
-enum LogisticsWarehouseCategoryChoices {
-  """
-  VENTA
-  """
-  A_01
-
-  """
-  VEHICULO
-  """
-  A_02
-
-  """
-  RESERVA
-  """
-  A_03
-
-  """
-  NO APLICA
-  """
-  NA
 }
 
 type CashType {
@@ -1598,11 +1715,13 @@ type CashFlowType {
 
   igv: Decimal!
 
-  total: Decimal!
+  total: Float
 
   remainingTotal: Decimal!
 
   createdAt: DateTime
+
+  route: RouteType
 
   isValidated: Boolean!
 
@@ -1611,6 +1730,16 @@ type CashFlowType {
   userName: String
 
   formattedDate: String
+
+  operationDocumentType: String
+
+  operationDocumentTypeReadable: String
+
+  operationSerial: String
+
+  operationCorrelative: Int
+
+  operationDays: Int
 }
 
 """
@@ -1708,37 +1837,12 @@ enum AccountingCashFlowDocumentTypeAttachedChoices {
   O
 }
 
-"""
-An enumeration.
-"""
-enum UsersCustomUserRoleChoices {
-  """
-  ENCARGADO DE LOGISTICA
-  """
-  A_01
-
-  """
-  REPRESENTANTE DE VENTAS
-  """
-  A_02
-
-  """
-  CONDUCTOR DE REPARTO
-  """
-  A_03
-
-  """
-  ENCARGADO ADMINISTRATIVO
-  """
-  A_04
-}
-
 type RouteType {
   id: Int
 
   gang: GangType
 
-  routeType: DistributionsRouteRouteTypeChoices!
+  routeType: Int
 
   routeDate: Date
 
@@ -1752,6 +1856,22 @@ type RouteType {
 
   parentRoute: RouteType
 
+  collector: CustomUserType
+
+  userWhoGenerated: CustomUserType
+
+  userWhoCanceled: CustomUserType
+
+  userWhoAuthorized: CustomUserType
+
+  userWhoLiquidated: CustomUserType
+
+  createdAt: DateTime!
+
+  updatedAt: DateTime!
+
+  cashflowSet: [CashFlowType!]!
+
   routeSet: [RouteType!]!
 
   dailyrouteSet: [DailyRouteType!]!
@@ -1763,6 +1883,22 @@ type RouteType {
   totalDispatchedOrders: Float
 
   totalPointsOfSale: Int
+
+  routeTypeReadable: String
+
+  totalDispatched: Float
+
+  totalWeighed: Float
+
+  routeOfRecoveryOfPaymentsId: Int
+
+  counterOfDailyRoutesOfRecoveryOfPayments: Int
+
+  collectorNames: String
+
+  userWhoAuthorizedNames: String
+
+  totalRoute: Float
 }
 
 type GangType {
@@ -1849,6 +1985,10 @@ type PersonAddressType {
   days: [DayType!]!
 
   isActive: Boolean
+
+  departures: [OperationType!]!
+
+  arrivals: [OperationType!]!
 
   dailyrouteSet: [DailyRouteType!]!
 
@@ -1945,6 +2085,22 @@ type DailyRouteType {
   userWhoConfirmed: CustomUserType
 
   stops: [OperationType!]!
+
+  totalDebtOperation: Float
+
+  totalDebtRoute: Float
+
+  totalPreviousPayedValidateRoute: Float
+
+  totalPayedNotValidatedOperation: Float
+
+  totalPayedValidatedOperation: Float
+
+  totalPayedValidatedRoute: Float
+
+  totalPayedCreditNote: Float
+
+  totalPreviousPayedCreditNoteRoute: Float
 }
 
 """
@@ -2029,37 +2185,7 @@ type GangDetailsType {
 """
 An enumeration.
 """
-enum DistributionsRouteRouteTypeChoices {
-  """
-  PREVENTA
-  """
-  A_1
-
-  """
-  REPARTO
-  """
-  A_2
-
-  """
-  COBRANZA REPARTIDOR
-  """
-  A_3
-
-  """
-  COBRANZA VENDEDOR
-  """
-  A_4
-}
-
-"""
-An enumeration.
-"""
 enum DistributionsRouteStatusChoices {
-  """
-  PROGRAMADO
-  """
-  P
-
   """
   GENERADO
   """
@@ -2068,17 +2194,96 @@ enum DistributionsRouteStatusChoices {
   """
   APROBADO
   """
-  B
+  A
 
   """
-  FINALIZADO
+  LIQUIDADO
   """
-  F
+  L
 
   """
   ANULADO
   """
-  A
+  C
+}
+
+type WarehouseType {
+  id: ID!
+
+  name: String
+
+  subsidiary: SubsidiaryType
+
+  truck: TruckType
+
+  category: LogisticsWarehouseCategoryChoices!
+
+  operationSet: [OperationType!]!
+
+  categoryReadable: String
+
+  subsidiaryId: Int
+
+  subsidiaryName: String
+
+  truckId: Int
+
+  truckLicensePlate: String
+}
+
+"""
+An enumeration.
+"""
+enum LogisticsWarehouseCategoryChoices {
+  """
+  VENTA
+  """
+  A_01
+
+  """
+  VEHICULO
+  """
+  A_02
+
+  """
+  RESERVA
+  """
+  A_03
+
+  """
+  NO APLICA
+  """
+  NA
+}
+
+"""
+An enumeration.
+"""
+enum UsersCustomUserRoleChoices {
+  """
+  ENCARGADO DE LOGISTICA
+  """
+  A_01
+
+  """
+  REPRESENTANTE DE VENTAS
+  """
+  A_02
+
+  """
+  CONDUCTOR DE REPARTO
+  """
+  A_03
+
+  """
+  ENCARGADO ADMINISTRATIVO
+  """
+  A_04
+
+  """
+  CONDUCTOR EXTERNO
+  """
+  A_05
 }
 
 """
@@ -2201,6 +2406,11 @@ enum OperationsOperationOperationTypeChoices {
   A_11
 
   """
+  GUIA DE REMISION - DEV. COMPRA
+  """
+  A_12
+
+  """
   NO APLICA
   """
   NA
@@ -2264,6 +2474,11 @@ enum OperationsOperationParentTypeChoices {
   TRANSFERENCIA
   """
   A_11
+
+  """
+  GUIA DE REMISION - DEV. COMPRA
+  """
+  A_12
 
   """
   NO APLICA
@@ -2394,91 +2609,6 @@ type UnitType {
   producttariffSet: [ProductTariffType!]!
 }
 
-type OverdueDebtRuleType {
-  id: ID!
-
-  paymentType: AccountingOverdueDebtRulePaymentTypeChoices!
-
-  sanctionType: AccountingOverdueDebtRuleSanctionTypeChoices!
-
-  criteria: AccountingOverdueDebtRuleCriteriaChoices!
-
-  typeTrade: TypeTradeType
-
-  valueMinimum: Decimal!
-
-  valueMaximum: Decimal
-
-  createdAt: DateTime!
-
-  updatedAt: DateTime!
-
-  paymentTypeReadable: String
-
-  sanctionTypeReadable: String
-
-  criteriaReadable: String
-
-  typeTradeId: Int
-
-  typeTradeName: String
-}
-
-"""
-An enumeration.
-"""
-enum AccountingOverdueDebtRulePaymentTypeChoices {
-  """
-  CONTADO
-  """
-  A_1
-
-  """
-  CREDITO
-  """
-  A_2
-}
-
-"""
-An enumeration.
-"""
-enum AccountingOverdueDebtRuleSanctionTypeChoices {
-  """
-  EN OBSERVACION
-  """
-  A_1
-
-  """
-  SUSPENSIÓN DE CREDITO
-  """
-  A_2
-
-  """
-  BLOQUEO DE VENTA
-  """
-  A_3
-}
-
-"""
-An enumeration.
-"""
-enum AccountingOverdueDebtRuleCriteriaChoices {
-  """
-  ENTRE
-  """
-  A_1
-
-  """
-  MAYOR QUE
-  """
-  A_2
-
-  """
-  MAYOR O IGUAL QUE
-  """
-  A_3
-}
-
 type PersonType {
   id: Int
 
@@ -2524,6 +2654,12 @@ type PersonType {
 
   isObserved: Boolean!
 
+  supplierAccount: [CashType!]!
+
+  clientAccount: [CashType!]!
+
+  cashflowSet: [CashFlowType!]!
+
   personaddressSet: [PersonAddressType!]!
 
   clients: [OperationType!]!
@@ -2535,12 +2671,6 @@ type PersonType {
   productlineSet: [ProductLineType!]!
 
   bonusdetailSet: [BonusDetailType!]!
-
-  supplierAccount: [CashType!]!
-
-  clientAccount: [CashType!]!
-
-  cashflowSet: [CashFlowType!]!
 
   businessTypeId: Int
 
@@ -2634,37 +2764,11 @@ type DailyGenerateRouteType {
 type CreatedRouteType {
   routeOfVisit: RouteType
 
-  routeOfDispatch: RouteType
+  routesOfDispatch: [RouteType]
 
-  routeOfRecoveryOfPayments: RouteType
+  othersGeneratedRoutesOfDispatch: [RouteType]
 
-  issuedOrders: [OperationType]
-
-  dispatchedOrders: [OperationType]
-
-  dispatchedCommodities: [CommoditySupplierType]
-}
-
-type CommoditySupplierType {
-  supplierName: String
-
-  groupedProducts: [CommodityProductType]
-}
-
-type CommodityProductType {
-  productCode: String
-
-  productName: String
-
-  productUnit: String
-
-  productQuantity: Float
-
-  productQuantityMaximum: Float
-
-  productQuantityFraction: Float
-
-  productTruckStock: Float
+  approvedOrders: [OperationType]
 }
 
 type ProvinceType {
@@ -2703,6 +2807,8 @@ type ProductTariffByTradeType {
   creditPercentage: Float
 
   quantityMinimum: Float
+
+  marginOfGain: Float
 }
 
 type InventoryType {
@@ -2772,6 +2878,8 @@ type Mutation {
 
   updateGang(dispatchDayId: Int, gangDetails: [GangDetailType], id: ID!, name: String, truckId: Int, visitDayId: Int): UpdateGangMutation
 
+  updateGangWithTruck(gangId: Int, truckId: Int): UpdateGangWithTruckMutation
+
   deleteGangDetail(id: ID!): DeleteGangDetailMutation
 
   generateVisitDayInAddress: GenerateVisitDayInAddressMutation
@@ -2790,6 +2898,8 @@ type Mutation {
 
   approveOrder(id: ID!, userId: Int): ApproveOrderMutation
 
+  approvePreSaleList(orderIds: [Int!]): ApprovePreSaleListMutation
+
   cancelOrder(id: ID!, userId: Int): CancelOrderMutation
 
   createPayment(operationId: Int, total: Float, userId: Int): CreatePaymentMutation
@@ -2800,17 +2910,27 @@ type Mutation {
 
   sendSunatOrders(orderIds: [Int!]): SendSunatOrdersMutation
 
-  sendToDispatchOrders(gangId: Int, orderIds: [Int!], routeDate: Date, warehouseId: Int): SendToDispatchOrdersMutation
-
-  registerPayments(orderWithDebtIds: [Int!], payments: [Float!]): RegisterPaymentsMutation
+  registerPayments(orderWithDebtIds: [Int!], payments: [Float!], userId: Int): RegisterPaymentsMutation
 
   createCreditNote(id: ID!, isExpired: Boolean, orderDetails: [InputOrderDetailType], paymentType: Int): CreateCreditNoteMutation
 
   cancelDispatchedOrder(id: ID!): CancelDispatchedOrderMutation
 
-  endRoute(routeId: ID!): EndRouteMutation
+  changePaymentToCredit(orderId: Int!): ChangePaymentToCreditMutation
 
-  generateCollectionSheet(date: Date, sellerId: Int): GenerateCollectionSheetMutation
+  generateCollectionSheet(date: Date, sellerId: Int, type: Int): GenerateCollectionSheetMutation
+
+  saveCashFlowRoute(operations: [OperationInput]!, routeId: Int!): SaveCashFlowRoute
+
+  createDispatchSheet(routeOfVisitId: Int!): CreateDispatchSheetMutation
+
+  supplyDispatchSheet(orderIds: [Int!], routeOfDispatchId: Int): SupplyDispatchSheetMutation
+
+  approveDispatchSheet(id: Int): ApproveDispatchSheetMutation
+
+  liquidateDispatchSheet(routeId: ID!): LiquidateDispatchSheetMutation
+
+  releaseDispatchedOrder(orderId: Int, routeId: Int): ReleaseDispatchedOrderMutation
 
   createOperation(addressId: Int, baseAmountDiscount: Float, baseAmountPerception: Float, baseCost: Float, basePercentageDiscount: Float, clientId: Int, documentNumber: String, documentType: String, exoneratedCost: Float, freeCost: Float, igvCost: Float, operationAction: String, operationDate: String, operationDetail: [OperationDetailsType], operationStatus: String, operationType: String, paymentType: String, shippingDate: String, totalSale: Float, userId: Int, warehouseId: Int): CreateOperationMutation
 
@@ -2902,6 +3022,14 @@ type Mutation {
 
   cancelTransfer(id: ID!): CancelTransferMutation
 
+  createGuide(arrivalAddressId: Int, baseCost: Float, departureAddressId: Int, guideDetails: [InputEntryDetailType], igvCost: Float, observation: String, operationDate: String, supplierId: Int, totalSale: Float, totalWeight: Float, transferDate: String, truckId: Int, userId: Int, warehouseId: Int): CreateGuideMutation
+
+  updateGuide(arrivalAddressId: Int, baseCost: Float, departureAddressId: Int, guideDetails: [InputEntryDetailType], id: ID!, igvCost: Float, observation: String, operationDate: String, supplierId: Int, totalSale: Float, totalWeight: Float, transferDate: String, truckId: Int, userId: Int, warehouseId: Int): UpdateGuideMutation
+
+  authorizeGuide(id: ID!): AuthorizeGuideMutation
+
+  cancelGuide(id: ID!): CancelGuideMutation
+
   tokenAuth(email: String!, password: String!): ObtainJSONWebToken
 
   verifyToken(token: String): Verify
@@ -2909,6 +3037,8 @@ type Mutation {
   refreshToken(refreshToken: String): Refresh
 
   revokeToken(refreshToken: String): Revoke
+
+  logout(userId: Int): LogoutMutation
 
   createCompany(name: String): CreateCompanyMutation
 
@@ -2982,6 +3112,10 @@ input GangDetailType {
 }
 
 type UpdateGangMutation {
+  message: String
+}
+
+type UpdateGangWithTruckMutation {
   message: String
 }
 
@@ -3063,6 +3197,10 @@ type ApproveOrderMutation {
   message: String
 }
 
+type ApprovePreSaleListMutation {
+  message: String
+}
+
 type CancelOrderMutation {
   message: String
 }
@@ -3083,10 +3221,6 @@ type SendSunatOrdersMutation {
   message: String
 }
 
-type SendToDispatchOrdersMutation {
-  message: String
-}
-
 type RegisterPaymentsMutation {
   message: String
 }
@@ -3099,7 +3233,7 @@ type CancelDispatchedOrderMutation {
   message: String
 }
 
-type EndRouteMutation {
+type ChangePaymentToCreditMutation {
   message: String
 }
 
@@ -3107,6 +3241,38 @@ type GenerateCollectionSheetMutation {
   message: String
 
   route: RouteType
+}
+
+type SaveCashFlowRoute {
+  message: String
+
+  route: RouteType
+}
+
+input OperationInput {
+  id: Int!
+
+  totalPayedNotValidated: Float!
+}
+
+type CreateDispatchSheetMutation {
+  message: String
+}
+
+type SupplyDispatchSheetMutation {
+  message: String
+}
+
+type ApproveDispatchSheetMutation {
+  message: String
+}
+
+type LiquidateDispatchSheetMutation {
+  message: String
+}
+
+type ReleaseDispatchedOrderMutation {
+  message: String
 }
 
 type CreateOperationMutation {
@@ -3351,6 +3517,8 @@ type UpdateProductSubLineMutation {
 
 type CreateEntryMutation {
   message: String
+
+  error: Boolean
 }
 
 input InputEntryDetailType {
@@ -3387,6 +3555,10 @@ input InputEntryDetailType {
   productNameBonus: String = ""
 
   productBonusId: Int = 0
+
+  productWeightInKilograms: Float = 0
+
+  productTariff: Int = 0
 }
 
 type UpdateEntryMutation {
@@ -3497,6 +3669,22 @@ type CancelTransferMutation {
   message: String
 }
 
+type CreateGuideMutation {
+  message: String
+}
+
+type UpdateGuideMutation {
+  message: String
+}
+
+type AuthorizeGuideMutation {
+  message: String
+}
+
+type CancelGuideMutation {
+  message: String
+}
+
 type ObtainJSONWebToken {
   payload: GenericScalar!
 
@@ -3532,6 +3720,10 @@ type Refresh {
 
 type Revoke {
   revoked: Int!
+}
+
+type LogoutMutation {
+  success: Boolean
 }
 
 type CreateCompanyMutation {

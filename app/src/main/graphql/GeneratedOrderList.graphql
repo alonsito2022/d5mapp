@@ -1,0 +1,14 @@
+query GeneratedOrderList($searchDate: String!, $employeeId: Int!, $operationStatus: String!){
+    salesByEmployee(searchDate:$searchDate, employeeId:$employeeId, operationStatus:$operationStatus){
+        id
+        operationDate
+        operationStatusName
+        paymentTypeReadable
+        clientNames
+        documentTypeToGenerateReadable
+        totalSale
+        baseCost
+        igvCost
+        baseAmountPerception
+    }
+}

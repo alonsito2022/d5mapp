@@ -51,12 +51,22 @@ class OrderViewModel @Inject constructor(
     val searchBy = _searchBy.asStateFlow()
 
     private fun addOperationDetailItem(productTariff: ProductTariff){
+        var cashPrice = 0.0
+        var creditPrice = 0.0
+
+        if(productTariff.exemptFromIgv) {
+            cashPrice = productTariff.cashSalePriceWithoutIgv.toString().toDouble()
+            creditPrice = productTariff.creditSalePriceWithoutIgv.toString().toDouble()
+        }else{
+            cashPrice = productTariff.cashSalePrice.toString().toDouble()
+            creditPrice = productTariff.creditSalePrice.toString().toDouble()
+        }
 
         val operationDetail = OperationDetail(
             productTariffId = productTariff.id.toInt(),
             stock = productTariff.stock,
-            cashPrice = productTariff.cashSalePrice.toString().toDouble(),
-            creditPrice = productTariff.creditSalePrice.toString().toDouble(),
+            cashPrice = cashPrice,
+            creditPrice = creditPrice,
             quantity = 0,
             productID = productTariff.productID,
             productName = productTariff.productName,
@@ -71,43 +81,56 @@ class OrderViewModel @Inject constructor(
             productExemptFromIgv   = productTariff.exemptFromIgv,
             productSubjectPerception   = productTariff.subjectPerception
         )
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             productTariff.quantity = 1.0
             _state.update { it.copy(
                 operationDetails = it.operationDetails.filter { o -> o.productActiveType != "02" }.toMutableList().apply { add(operationDetail) }
             )}
         }
-        searchDiscounts(state.value.selectedPaymentType)
-        onChangeStatusProductTariff(productTariff.id.toInt() , true)
+//        searchDiscounts(state.value.selectedPaymentType)
+//        onChangeStatusProductTariff(productTariff.id.toInt() , true)
     }
 
     fun deleteOperationDetailItem(productTariffId: Int){
-        val selectedFound = state.value.operationDetails.find { it.productTariffId == productTariffId }
-        if (selectedFound != null) {
-
-            viewModelScope.launch {
-                _state.update { it.copy(
-                    operationDetails = it.operationDetails.toMutableList().apply { remove(selectedFound) }
-                )}
-            }
-            searchDiscounts(state.value.selectedPaymentType)
-            onChangeStatusProductTariff(productTariffId , false)
+//        val selectedFound = state.value.operationDetails.find { it.productTariffId == productTariffId }
+//        if (selectedFound != null) {
+//
+//            viewModelScope.launch {
+//                _state.update { it.copy(
+//                    operationDetails = it.operationDetails.toMutableList().apply { remove(selectedFound) }
+//                )}
+//            }
+//            searchDiscounts(state.value.selectedPaymentType)
+//            onChangeStatusProductTariff(productTariffId , false)
+//        }
+        viewModelScope.launch(Dispatchers.Default) {
+            _state.update { it.copy(
+                operationDetails = it.operationDetails.filterNot { it.productTariffId == productTariffId }
+            )}
+//            searchDiscounts(state.value.selectedPaymentType)
+//            onChangeStatusProductTariff(productTariffId, false)
         }
 
     }
 
     private fun onChangeStatusProductTariff(productTariffId: Int, status: Boolean) {
-        val searchProductTariff = state.value.productTariffs.find { it.id.toInt() == productTariffId }
-        if (searchProductTariff != null) {
-            val index = state.value.productTariffs.indexOf(searchProductTariff)
-            searchProductTariff.isSelected = status
-
-            viewModelScope.launch {
-                _state.update { it.copy(
-                    productTariffs = it.productTariffs.toMutableList().apply { set(index, searchProductTariff) }
-                )}
+//        val searchProductTariff = state.value.productTariffs.find { it.id.toInt() == productTariffId }
+//        if (searchProductTariff != null) {
+//            val index = state.value.productTariffs.indexOf(searchProductTariff)
+//            searchProductTariff.isSelected = status
+//
+//            viewModelScope.launch {
+//                _state.update { it.copy(
+//                    productTariffs = it.productTariffs.toMutableList().apply { set(index, searchProductTariff) }
+//                )}
+//            }
+//
+//        }
+        viewModelScope.launch {
+            val updatedProductTariffs = state.value.productTariffs.map {
+                if (it.id.toInt() == productTariffId) it.copy(isSelected = status) else it
             }
-
+            _state.update { it.copy(productTariffs = updatedProductTariffs) }
         }
     }
 
@@ -163,8 +186,27 @@ class OrderViewModel @Inject constructor(
 //    }
 
     fun onClickProductTariffItem(productTariff: ProductTariff, status: Boolean) {
+        Log.d("D5MAP","productTariff : ${productTariff.productName} current isSelected : ${productTariff.isSelected} to ${status}")
+        viewModelScope.launch(Dispatchers.Default) {
+            val updatedProductTariffs = state.value.productTariffs.map {
+                if (it.id == productTariff.id) it.copy(isSelected = status) else it
+            }
+            _state.update { it.copy(productTariffs = updatedProductTariffs) }
+        }
+//        val selectedFound = state.value.operationDetails.find { it.productTariffId == productTariff.id }
+//        if (selectedFound != null) {
+//
+//        }
+//        state.value.productTariffs
         if(status) addOperationDetailItem(productTariff)
         else deleteOperationDetailItem(productTariff.id.toInt())
+
+//        state.value.operationDetails.forEach { operationDetail ->
+//            Log.d("D5MAP","operationDetail : ${operationDetail.productTariffId} productActiveType : ${operationDetail.productActiveType}")
+//        }
+//        state.value.productTariffs.forEach { tariff ->
+//            Log.d("D5MAP","productTariffId : ${tariff.id} isSelected : ${tariff.isSelected}")
+//        }
     }
 
     fun saveOrder(){
@@ -193,46 +235,58 @@ class OrderViewModel @Inject constructor(
 
         if (quantities.isNotEmpty()){
             Log.d("D5MAP","quantities.size : ${quantities.size}")
-            val order = Order(
-                state.value.userId,
-                state.value.clientId,
-                state.value.addressId,
-                state.value.typeTradeId.toString(),
-                state.value.dailyRouteId,
-                state.value.selectedPaymentType,
-                state.value.selectedDocumentType,
-                Optional.presentIfNotNull(productTariffIds),
-                Optional.presentIfNotNull(quantities),
-                Optional.presentIfNotNull(bonusIds),
-                Optional.presentIfNotNull(prices),
-                Optional.presentIfNotNull(discountPercentages),
-                Optional.presentIfNotNull(discountAmounts),
-                state.value.baseCost,
-                state.value.igvCost,
-                state.value.totalSale,
-                state.value.freeCost,
-                state.value.discountCost,
-                state.value.exoneratedCost,
-                state.value.perceptionCost,
-                state.value.totalToPay
-            )
-            Log.d("D5MAP2","order ${order}")
-            viewModelScope.launch {
+            if (state.value.totalSale>0){
+                val order = Order(
+                    state.value.userId,
+                    state.value.clientId,
+                    state.value.addressId,
+                    state.value.typeTradeId.toString(),
+                    state.value.dailyRouteId,
+                    state.value.selectedPaymentType,
+                    state.value.selectedDocumentType,
+                    Optional.presentIfNotNull(productTariffIds),
+                    Optional.presentIfNotNull(quantities),
+                    Optional.presentIfNotNull(bonusIds),
+                    Optional.presentIfNotNull(prices),
+                    Optional.presentIfNotNull(discountPercentages),
+                    Optional.presentIfNotNull(discountAmounts),
+                    state.value.baseCost,
+                    state.value.igvCost,
+                    state.value.totalSale,
+                    state.value.freeCost,
+                    state.value.discountCost,
+                    state.value.exoneratedCost,
+                    state.value.perceptionCost,
+                    state.value.totalToPay
+                )
+                Log.d("D5MAP2","order ${order}")
+                viewModelScope.launch {
 
-                try {
+                    try {
+                        _state.update { it.copy(
+                            message = saveOrderUseCase.execute(order).toString(),
+                            success = true
+                        ) }
+                    } catch (exception: Exception) {
+                        Log.d("D5MAP2","exception ${exception.message}")
+                        _state.update { it.copy(
+                            exception = exception,
+                            error = true,
+                            message = exception.message!!
+                        ) }
+                    }
+                }
+            }else{
+
+                viewModelScope.launch {
                     _state.update { it.copy(
-                        message = saveOrderUseCase.execute(order).toString(),
-                        success = true
-                    ) }
-                } catch (exception: Exception) {
-                    Log.d("D5MAP2","exception ${exception.message}")
-                    _state.update { it.copy(
-                        exception = exception,
-                        error = true,
-                        message = exception.message!!
+                        message = "Verifique precios",
+                        error = true
                     ) }
                 }
             }
+
+
 
         }else{
 
@@ -394,23 +448,24 @@ class OrderViewModel @Inject constructor(
         var perceptionCost: Double = 0.0
 
         if (paymentType == "CREDITO"){
-            totalSale = round((_state.value.operationDetails.filter { operationDetail -> operationDetail.productActiveType != "02" }.sumOf { it.creditSubtotal }) * 100) / 100
+            totalSale = round((_state.value.operationDetails.filter { operationDetail -> operationDetail.productActiveType != "02" && !operationDetail.productExemptFromIgv }.sumOf { it.creditSubtotal }) * 100) / 100
             discountCost = round((_state.value.operationDetails.filter { operationDetail -> operationDetail.productActiveType != "02" }.sumOf { it.amountDiscount }) * 100) / 100
-            exoneratedCost = round((_state.value.operationDetails.filter { operationDetail -> operationDetail.productActiveType != "02" && operationDetail.productExemptFromIgv }.sumOf { it.creditSubtotal * 0.18 }) * 100) / 100
+            exoneratedCost = round((_state.value.operationDetails.filter { operationDetail -> operationDetail.productActiveType != "02" && operationDetail.productExemptFromIgv }.sumOf { it.creditSubtotal }) * 100) / 100
             perceptionCost = round((_state.value.operationDetails.filter { operationDetail -> operationDetail.productActiveType != "02" && operationDetail.productSubjectPerception }.sumOf { it.creditSubtotal * 0.02 }) * 100) / 100
             freeCost = round((_state.value.operationDetails.filter { operationDetail -> operationDetail.productActiveType == "02" }.sumOf { it.quantity * it.creditPrice }) * 100) / 100
         }else{
-            totalSale = round((_state.value.operationDetails.filter { operationDetail -> operationDetail.productActiveType != "02" }.sumOf { it.cashSubtotal }) * 100) / 100
+            totalSale = round((_state.value.operationDetails.filter { operationDetail -> operationDetail.productActiveType != "02" && !operationDetail.productExemptFromIgv }.sumOf { it.cashSubtotal }) * 100) / 100
             discountCost = round((_state.value.operationDetails.filter { operationDetail -> operationDetail.productActiveType != "02" }.sumOf { it.amountDiscount }) * 100) / 100
 
-            exoneratedCost = round((_state.value.operationDetails.filter { operationDetail -> operationDetail.productActiveType != "02" && operationDetail.productExemptFromIgv }.sumOf { it.cashSubtotal * 0.18 }) * 100) / 100
+            exoneratedCost = round((_state.value.operationDetails.filter { operationDetail -> operationDetail.productActiveType != "02" && operationDetail.productExemptFromIgv }.sumOf { it.cashSubtotal  }) * 100) / 100
             perceptionCost = round((_state.value.operationDetails.filter { operationDetail -> operationDetail.productActiveType != "02" && operationDetail.productSubjectPerception }.sumOf { it.cashSubtotal * 0.02 }) * 100) / 100
             freeCost = round((_state.value.operationDetails.filter { operationDetail -> operationDetail.productActiveType == "02" }.sumOf { it.cashSubtotal }) * 100) / 100
-            Log.d("D5MAP2","freeCost2 : ${_state.value.operationDetails.filter { operationDetail -> operationDetail.productActiveType == "02" }}")
+            Log.d("D5MAP2","totalSale : ${totalSale}")
         }
 
         baseCost = totalSale / 1.18
         igvCost = totalSale - baseCost
+        totalSale += exoneratedCost
         totalToPay = totalSale + perceptionCost
         _state.update { it.copy(
             totalSale = totalSale,

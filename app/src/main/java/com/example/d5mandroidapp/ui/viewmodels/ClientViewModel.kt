@@ -5,6 +5,7 @@ import kotlinx.coroutines.delay
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.Optional
+import com.example.d5mandroidapp.apollo.ApolloClientUpdater
 import com.example.d5mandroidapp.data.models.Client
 import com.example.d5mandroidapp.data.models.OperationDetail
 import com.example.d5mandroidapp.data.models.OrderWithDebt
@@ -29,7 +30,8 @@ class ClientViewModel @Inject constructor(
     private val getSimpleAddressesByClientIdUseCase: GetSimpleAddressesByClientIdUseCase,
     private val getClientWithDebtByIdUseCase: GetClientWithDebtByIdUseCase,
     private val getOrdersWithDebtByClientIdUseCase: GetOrdersWithDebtByClientIdUseCase,
-    private val savePaymentListUseCase: SavePaymentListUseCase
+    private val savePaymentListUseCase: SavePaymentListUseCase,
+//    private val apolloClientUpdater: ApolloClientUpdater
 
 ): ViewModel() {
 
@@ -70,6 +72,15 @@ class ClientViewModel @Inject constructor(
             ) }
         }
     }
+
+//    init {
+//        viewModelScope.launch {
+//            apolloClientUpdater.apolloClient.collect { client ->
+//                // El cliente Apollo ha sido actualizado
+//                // Puedes realizar acciones adicionales si es necesario
+//            }
+//        }
+//    }
 
     fun searchAddresses(clientId: String){
         viewModelScope.launch(Dispatchers.IO) {
@@ -131,6 +142,12 @@ class ClientViewModel @Inject constructor(
         }
     }
 
+    fun setUser(userId: Int) {
+        _state.update { it.copy(
+            userId = userId
+        ) }
+    }
+
     fun sendOrdersToPay(){
         val orderWithDebtIds = mutableListOf<Int>()
         val payments = mutableListOf<Double>()
@@ -150,7 +167,8 @@ class ClientViewModel @Inject constructor(
                         it.copy(
                             message = savePaymentListUseCase.execute(
                                 Optional.presentIfNotNull(orderWithDebtIds),
-                                Optional.presentIfNotNull(payments)
+                                Optional.presentIfNotNull(payments),
+                                state.value.userId
                             ).toString()
                         )
                     }

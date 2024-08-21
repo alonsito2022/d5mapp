@@ -25,4 +25,18 @@ class UserRepositoryImpl(private val context: Context) : UserRepository {
     override fun getUserEmail(): String? {
         return context.applicationContext.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE).getString("userEmail", null)
     }
+
+    override fun clearUserId() {
+        with(context.applicationContext.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE).edit()) {
+            remove("userId")
+            apply()
+        }
+    }
+
+    override fun clearUserEmail() {
+        with(context.applicationContext.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE).edit()) {
+            remove("userEmail")
+            apply()
+        }
+    }
 }

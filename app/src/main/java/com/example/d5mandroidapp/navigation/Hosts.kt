@@ -13,6 +13,7 @@ import com.example.d5mandroidapp.ui.views.SplashScreen
 import com.example.d5mandroidapp.ui.views.TruckList
 import com.example.d5mandroidapp.ui.views.clients.ClientScreen
 import com.example.d5mandroidapp.ui.views.collections.DebtScreen
+import com.example.d5mandroidapp.ui.views.generatedorders.GeneratedOrderScreen
 import com.example.d5mandroidapp.ui.views.orders.OrderScreen
 import com.example.d5mandroidapp.ui.views.routes.RouteScreen
 
@@ -38,6 +39,11 @@ fun Hosts(
 //            topBarState = true
             onTopBarState(true)
             Profile()
+        }
+        composable(Screens.GeneratedOrders.screen){
+//            topBarState = true
+            onTopBarState(true)
+            GeneratedOrderScreen(navigationController)
         }
         composable(Screens.Order.screen + "/{clientId}/{addressId}/{dailyRouteId}") { backStackEntry ->
 

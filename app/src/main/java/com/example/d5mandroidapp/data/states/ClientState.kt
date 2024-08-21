@@ -16,5 +16,6 @@ data class ClientState(
     val visitDate: String = "2024-05-13",
     val message: String = "",
     val success: Boolean = false,
-    val error: Boolean = false
+    val error: Boolean = false,
+    val userId: Int = 0,
 )

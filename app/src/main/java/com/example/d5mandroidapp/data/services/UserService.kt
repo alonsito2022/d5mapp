@@ -2,6 +2,7 @@ package com.example.d5mandroidapp.data.services
 
 import com.apollographql.apollo3.ApolloClient
 import com.example.d5mandroidapp.GetUserQuery
+import com.example.d5mandroidapp.LogoutMutation
 import com.example.d5mandroidapp.VerifyTokenMutation
 import com.example.d5mandroidapp.data.models.Payload
 import com.example.d5mandroidapp.data.models.User
@@ -27,5 +28,13 @@ class UserService(private val apolloClient: ApolloClient): UserApiClient {
             .data
             ?.verifyToken?.toVerifiedToken()
 //        return null
+    }
+
+    override suspend fun removeRefreshToken(userId: Int): Boolean? {
+        return apolloClient
+            .mutation(LogoutMutation(userId))
+            .execute()
+            .data
+            ?.logout?.success
     }
 }

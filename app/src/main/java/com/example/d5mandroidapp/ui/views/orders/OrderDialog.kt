@@ -219,25 +219,31 @@ fun OrderDialog(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Button(
-                            modifier = Modifier.weight(1f).padding(end = 4.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = 4.dp),
                             onClick = { onDismiss() },
                             shape = RoundedCornerShape(5.dp),
                             colors = ButtonDefaults.buttonColors(Color.Gray)
                         ) {
                             Text(text = "Cerrar")
                         }
-                        Button(
-                            modifier = Modifier.weight(1f).padding(start = 4.dp),
-                            onClick = {
-                                onDismiss()
-                                viewModel.saveOrder()
+                        if (!orderState.isLoading && orderState.operationDetails.isNotEmpty()) {
+                            Button(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(start = 4.dp),
+                                onClick = {
+                                    onDismiss()
+                                    viewModel.saveOrder()
 
-                            },
-                            enabled = !clientState.selectedClient.isBlocked,
-                            shape = RoundedCornerShape(5.dp),
-                            colors = ButtonDefaults.buttonColors(colorResource(id=R.color.purple_200))
-                        ) {
-                            Text(text = "Guardar")
+                                },
+                                enabled = !clientState.selectedClient.isBlocked,
+                                shape = RoundedCornerShape(5.dp),
+                                colors = ButtonDefaults.buttonColors(colorResource(id = R.color.purple_200))
+                            ) {
+                                Text(text = "Guardar")
+                            }
                         }
                     }
 

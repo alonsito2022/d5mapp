@@ -10,4 +10,5 @@ sealed class Screens (val screen: String){
     data object Client: Screens("client")
     data object Route: Screens("route")
     data object Splash: Screens("splash")
+    data object GeneratedOrders: Screens("generated_orders")
 }

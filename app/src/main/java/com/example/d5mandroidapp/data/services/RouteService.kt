@@ -56,10 +56,12 @@ class RouteService(private val apolloClient: ApolloClient): RouteApiClient {
     override suspend fun getDailyRoutesByCriteria(
         userId: Int,
         gangId: Int,
-        visitDate: String
+        visitDate: String,
+        searchQuery: String,
+        searchBy: String
     ): List<DailyRoute> {
         return apolloClient
-            .query(DailyRouteFilteredListQuery(userId, gangId, visitDate))
+            .query(DailyRouteFilteredListQuery(userId, gangId, visitDate, searchQuery, searchBy))
             .execute()
             .data
             ?.dailyRoutesByCriteria

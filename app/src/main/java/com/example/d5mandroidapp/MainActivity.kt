@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.rounded.Menu
@@ -85,6 +86,7 @@ import com.apollographql.apollo3.exception.ApolloException
 import com.example.d5mandroidapp.apollo.apolloClient
 import com.example.d5mandroidapp.navigation.Hosts
 import com.example.d5mandroidapp.navigation.Screens
+import com.example.d5mandroidapp.storage.UserRepositoryImpl
 import com.example.d5mandroidapp.ui.theme.AccentJC
 import com.example.d5mandroidapp.ui.theme.PrimaryDarkJC
 import com.example.d5mandroidapp.ui.theme.Purple80
@@ -137,6 +139,7 @@ fun RootNavHost() {
     val scope = rememberCoroutineScope()
     val timerUtils = TimerUtils()
     val tokenRepository = TokenRepositoryImpl(context)
+    val userRepository = UserRepositoryImpl(context)
     val token = tokenRepository.getToken()
 //    Log.w("D5MAP2", "tokenRepository ${token}")
     scope.launch {
@@ -145,6 +148,7 @@ fun RootNavHost() {
 
             navigationController.navigate(Screens.Login.screen)
             tokenRepository.clearToken()
+            tokenRepository.clearRefreshToken()
         }
     }
     ModalNavigationDrawer(
@@ -295,6 +299,30 @@ fun RootNavHost() {
 
                 NavigationDrawerItem(label = {
                     Text(
+                        text = "Ventas Generadas",
+                        color = PrimaryDarkJC,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                    selected = false,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.List,
+                            contentDescription = null,
+                            tint = PrimaryDarkJC
+                        )
+                    },
+                    onClick = {
+                        coroutineScope.launch {
+                            drawerState.close()
+                        }
+                        navigationController.navigate(Screens.GeneratedOrders.screen) {
+                            popUpTo(0)
+                        }
+                    })
+
+                NavigationDrawerItem(label = {
+                    Text(
                         text = "Cerrar sesion",
                         color = PrimaryDarkJC,
                         fontWeight = FontWeight.Bold
@@ -311,9 +339,22 @@ fun RootNavHost() {
                     onClick = {
                         coroutineScope.launch {
                             drawerState.close()
-                            Toast.makeText(context, "Cerraste sesión.", Toast.LENGTH_SHORT).show()
-                            navigationController.navigate(Screens.Login.screen)
-                            tokenRepository.clearToken()
+//                            val userId = userRepository.getUserId()
+//                            scope.launch {
+//                                val ok = userId?.let { logout(context, it.toInt()) }
+//                                if (ok == true) {
+                                    tokenRepository.clearToken()
+                                    tokenRepository.clearRefreshToken()
+                                    userRepository.clearUserId()
+                                    userRepository.clearUserEmail()
+                                    Toast.makeText(context, "Cerraste sesión.", Toast.LENGTH_SHORT).show()
+                                    navigationController.navigate(Screens.Login.screen)
+//                                }
+//                            }
+
+
+
+
                         }
 
 
@@ -360,6 +401,7 @@ fun RootNavHost() {
         }
     }
 
+
 }
 
 private suspend fun verifyingToken(context: Context, token: String): Boolean {
@@ -377,6 +419,20 @@ private suspend fun verifyingToken(context: Context, token: String): Boolean {
     val verifyToken = response.data?.verifyToken
     if (verifyToken == null) {
         Toast.makeText(context, "La firma ha caducado", Toast.LENGTH_LONG).show()
+        return false
+    }
+    return true
+}
+private suspend fun logout(context: Context, userId: Int): Boolean {
+    val response = try {
+        apolloClient.mutation(LogoutMutation(userId = userId)).execute()
+    } catch (e: ApolloException) {
+        Toast.makeText(context, "No se pudo conectar", Toast.LENGTH_SHORT).show()
+        return false
+    }
+    val verifyLogout = response.data?.logout?.success
+    if (verifyLogout == null) {
+        Toast.makeText(context, "No se pudo cerrar sesión", Toast.LENGTH_LONG).show()
         return false
     }
     return true

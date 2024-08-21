@@ -49,9 +49,6 @@ fun ProductTariffItem(
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .clickable {
-                    viewModel.onClickProductTariffItem(productTariff, !productTariff.isSelected)
-                }
                 .background(if (productTariff.isSelected) GreenJC else Color.White)
                 ,
 //                .height(120.dp)
@@ -117,16 +114,20 @@ fun ProductTariffItem(
                 Text(text = "STOCK ${productTariff.stock.toInt()}", fontFamily = FontFamily.SansSerif, fontSize = 14.sp)
 
             }
-//            Checkbox(
-//                modifier = Modifier.weight(15f),
-//                colors = CheckboxDefaults.colors(
-//                    checkedColor = Color.DarkGray,
-//                    checkmarkColor = Color.White,
-//                    uncheckedColor = Color.DarkGray,
-//                ),
-//                checked = productTariff.isSelected,
+            Checkbox(
+                modifier = Modifier.weight(15f),
+                colors = CheckboxDefaults.colors(
+                    checkedColor = Color.DarkGray,
+                    checkmarkColor = Color.White,
+                    uncheckedColor = Color.DarkGray,
+                ),
+                checked = productTariff.isSelected,
 //                enabled = false,
-//                onCheckedChange = {})
+                onCheckedChange = {
+
+                    viewModel.onClickProductTariffItem(productTariff, it)
+
+                })
 
         }
     }

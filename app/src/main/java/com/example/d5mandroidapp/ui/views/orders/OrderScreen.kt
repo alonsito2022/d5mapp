@@ -26,6 +26,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -92,12 +93,7 @@ fun OrderScreen(navController: NavController, clientId: String?, addressId: Stri
             }
         }
 
-        addressesList = clientState.addresses.map { address ->
-            "${address.address} ${address.districtName} ${address.provinceName} ${address.departmentName}"
-        }
-        addressesIdsList = clientState.addresses.map { address -> address.id }
-
-        if (addressesIdsList.isNotEmpty()){
+        if (clientState.addresses.isNotEmpty()){
             val searchAddress = clientState.addresses.find { it.id == addressId?.toInt() }
             if (searchAddress != null) {
                 orderViewModel.setAddress(searchAddress.id, searchAddress.address)
@@ -110,6 +106,7 @@ fun OrderScreen(navController: NavController, clientId: String?, addressId: Stri
     }
 
     Scaffold(
+        floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
             FloatingActionButton(
                 modifier = Modifier

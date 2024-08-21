@@ -1,8 +1,11 @@
 package com.example.d5mandroidapp.storage
 
 import android.content.Context
+import com.example.d5mandroidapp.apollo.ApolloClientUpdater
 
-class TokenRepositoryImpl(private val context: Context) : TokenRepository {
+class TokenRepositoryImpl(
+    private val context: Context
+) : TokenRepository {
 
     override suspend fun setToken(token: String?) {
         with(context.applicationContext.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE).edit()) {

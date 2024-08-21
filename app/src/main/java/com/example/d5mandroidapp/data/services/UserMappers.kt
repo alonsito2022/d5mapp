@@ -2,6 +2,7 @@ package com.example.d5mandroidapp.data.services
 
 import com.example.d5mandroidapp.GetUserQuery
 import com.example.d5mandroidapp.VerifyTokenMutation
+import com.example.d5mandroidapp.LogoutMutation
 import com.example.d5mandroidapp.data.models.User
 import com.example.d5mandroidapp.data.models.VerifiedToken
 

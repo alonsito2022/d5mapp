@@ -15,6 +15,7 @@ import com.example.d5mandroidapp.domain.GetDailyRoutesByCriteriaUseCase
 import com.example.d5mandroidapp.domain.GetOrdersWithDebtByClientIdUseCase
 import com.example.d5mandroidapp.domain.GetSimpleAddressesByClientIdUseCase
 import com.example.d5mandroidapp.domain.GetZonePointsByZoneIdUseCase
+import com.example.d5mandroidapp.domain.RemoveRefreshTokenUseCase
 import com.example.d5mandroidapp.domain.SavePaymentListUseCase
 import com.example.d5mandroidapp.domain.VerifyTokenUseCase
 import com.example.d5mandroidapp.storage.TokenRepositoryImpl
@@ -47,6 +48,7 @@ class UserViewModel @Inject constructor(
     private val getAssignedZonesByUserIdUseCase: GetAssignedZonesByUserIdUseCase,
 //    private val verifyTokenUseCase: VerifyTokenUseCase,
     private val getDailyRoutesByCriteriaUseCase: GetDailyRoutesByCriteriaUseCase,
+    private val removeRefreshTokenUseCase: RemoveRefreshTokenUseCase,
     @ApplicationContext context: Context
 ): ViewModel() {
 
@@ -122,21 +124,14 @@ class UserViewModel @Inject constructor(
                             zoneCenterId = zoneList[0].id,
                         )}
 
-                        val deferredJobDailyRoutes = async {getDailyRoutesByCriteriaUseCase.execute(state.value.userId, gangList[0].id, state.value.visitDate).filter { it.routeDailyRouteIsEnabled }}
-                        val dailyRoutesList = deferredJobDailyRoutes.await()
-                        Log.d("D5MAP2","dailyRoutesList: ${dailyRoutesList.size}")
-                        if (dailyRoutesList.isNotEmpty()){
-                            _state.update { it.copy(
-                                dailyRoutes = dailyRoutesList,
-                                filteredDailyRoutes = dailyRoutesList,
-                                isLoading = false
-                            )}
-                        }
-                    }
 
+                    }
                 }
             }
 
+            _state.update { it.copy(
+                isLoading = false
+            )}
 
         }
     }
@@ -157,6 +152,15 @@ class UserViewModel @Inject constructor(
         }
     }
 
+//    fun closeSession(){
+//        viewModelScope.launch {
+//            var isLogout = removeRefreshTokenUseCase
+//            _state.update { it.copy(
+//                isOffline = true
+//            ) }
+//        }
+//    }
+
     private fun filterAndSearchByCriteria(text: String){
 
         viewModelScope.launch {
@@ -165,15 +169,25 @@ class UserViewModel @Inject constructor(
                 isLoading = true
             ) }
 
+            val deferredJobDailyRoutes = async {getDailyRoutesByCriteriaUseCase.execute(state.value.userId, state.value.gangId, state.value.visitDate, searchClientText.value, searchClientBy.value).filter { it.routeDailyRouteIsEnabled }}
+            val dailyRoutesList = deferredJobDailyRoutes.await()
+            Log.d("D5MAP2","dailyRoutesList: ${dailyRoutesList.size}")
+            if (dailyRoutesList.isNotEmpty()){
+                _state.update { it.copy(
+//                    dailyRoutes = dailyRoutesList,
+                    filteredDailyRoutes = dailyRoutesList
+                )}
+            }
+
             _state.update { it.copy(
-                filteredDailyRoutes = _state.value.dailyRoutes.filter { dailyRoute ->
-                    when (searchClientBy.value) {
-                        "names" -> dailyRoute.routePersonNames.contains(text, ignoreCase = true)
-                        "code" -> dailyRoute.routePersonCode.contains(text, ignoreCase = true)
-                        "document" -> dailyRoute.routePersonDocumentNumber.contains(text, ignoreCase = true)
-                        else -> false // Si el criterio de búsqueda no es válido, no se incluye en el filtro
-                    }
-                },
+//                filteredDailyRoutes = _state.value.dailyRoutes.filter { dailyRoute ->
+//                    when (searchClientBy.value) {
+//                        "names" -> dailyRoute.routePersonNames.contains(text, ignoreCase = true)
+//                        "code" -> dailyRoute.routePersonCode.contains(text, ignoreCase = true)
+//                        "document" -> dailyRoute.routePersonDocumentNumber.contains(text, ignoreCase = true)
+//                        else -> false // Si el criterio de búsqueda no es válido, no se incluye en el filtro
+//                    }
+//                },
                 isLoading = false
             ) }
 
@@ -211,6 +225,7 @@ class UserViewModel @Inject constructor(
         }
 
     }
+
     init {
         val nextMondayDate = getCurrentOrNextMondayDate()
         viewModelScope.launch {
@@ -225,6 +240,7 @@ class UserViewModel @Inject constructor(
         assignedGangsAndZones()
 
     }
+
     fun onClickButtonToggleSearchPanel(){
         _state.update {
             it.copy(

@@ -10,12 +10,14 @@ class PaymentService(
 
     override suspend fun savePaymentList(
         orderWithDebtIds: Optional<List<Int>?>,
-        payments: Optional<List<Double>?>
+        payments: Optional<List<Double>?>,
+        userId: Int
     ): String? {
         return apolloClient
             .mutation(SavePaymentListMutation(
                 orderWithDebtIds,
-                payments
+                payments,
+                userId
             ))
             .execute()
             .data
