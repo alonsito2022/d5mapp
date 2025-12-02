@@ -89,9 +89,11 @@ fun Hosts(
 //            topBarState = false
             onTopBarState(false)
 //            onGesturesEnabled(false)
-            LoginScreen {
-                navigationController.navigate(Screens.Profile.screen)
-            }
+            LoginScreen(
+                navigateToProfile = {
+                    navigationController.navigate(Screens.Profile.screen)
+                }
+            )
         }
 
 

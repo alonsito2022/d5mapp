@@ -186,7 +186,7 @@ fun OrderDialog(
                         .fillMaxWidth()
                         .padding(4.dp), horizontalArrangement = Arrangement.SpaceBetween) {
                         Text(text = "TOTAL:", fontWeight = FontWeight.Bold, color = Color.Gray, fontSize = 12.sp)
-                        Text(text = "S/ ${orderState.totalSale}", fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                        Text(text = "S/ ${String.format("%.2f", orderState.totalSale)}", fontWeight = FontWeight.Bold, fontSize = 13.sp)
 
                     }
                     Row(modifier = Modifier

@@ -49,49 +49,29 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.example.d5mandroidapp.storage.TokenRepositoryImpl
 import com.example.d5mandroidapp.ui.theme.D5MAndroidAppTheme
-import com.example.d5mandroidapp.utils.JWTUtils
 import com.example.d5mandroidapp.utils.TimerUtils
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import java.util.Date
-import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.Checkbox
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.apollographql.apollo3.exception.ApolloException
 import com.example.d5mandroidapp.apollo.apolloClient
 import com.example.d5mandroidapp.navigation.Hosts
 import com.example.d5mandroidapp.navigation.Screens
 import com.example.d5mandroidapp.storage.UserRepositoryImpl
-import com.example.d5mandroidapp.ui.theme.AccentJC
-import com.example.d5mandroidapp.ui.theme.PrimaryDarkJC
-import com.example.d5mandroidapp.ui.theme.Purple80
-import com.example.d5mandroidapp.ui.theme.Teal200
-import com.example.d5mandroidapp.ui.viewmodels.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @RequiresApi(Build.VERSION_CODES.R)
@@ -156,14 +136,14 @@ fun RootNavHost() {
         gesturesEnabled = gesturesEnabled,
         drawerContent = {
             ModalDrawerSheet(
-                modifier = Modifier.background(Color.White),
-                drawerContentColor = Color.DarkGray,
-                drawerContainerColor = Color.White,
+                drawerContentColor = MaterialTheme.colorScheme.onSurface,
+                drawerContainerColor = MaterialTheme.colorScheme.surface,
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White), horizontalArrangement = Arrangement.End
+                        .background(MaterialTheme.colorScheme.surface),
+                    horizontalArrangement = Arrangement.End
                 ) {
                     IconButton(
                         onClick = {
@@ -175,17 +155,17 @@ fun RootNavHost() {
                     ) {
                         Icon(
                             imageVector = Icons.Default.Close,
-                            contentDescription = "Cerrar drawer"
+                            contentDescription = "Cerrar drawer",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
                 Box(
                     modifier = Modifier
-                        .background(Color.White)
+                        .background(MaterialTheme.colorScheme.surface)
                         .fillMaxWidth()
                         .height(250.dp)
                         .paint(
-                            // Replace with your image id
                             painterResource(id = R.drawable.bg15),
                             contentScale = ContentScale.FillBounds
                         )
@@ -197,47 +177,39 @@ fun RootNavHost() {
                         verticalArrangement = Arrangement.Bottom,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-
-
-//                        Icon(
-//                            imageVector = Icons.Default.AccountCircle,
-//                            contentDescription = "Menu",
-//                            modifier = Modifier.size(100.dp),
-//                            tint = Color.LightGray
-//                        )
                         Text(
                             modifier = Modifier.fillMaxWidth(),
                             text = "APLICACION 5M DISTRIBUCIONES",
                             fontFamily = FontFamily(Font(R.font.aeonik_light)),
                             fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp
+                            fontSize = 20.sp,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             modifier = Modifier.fillMaxWidth(),
                             text = "DESARROLLADA POR 4SOLUCIONES",
                             fontFamily = FontFamily(Font(R.font.aeonik_light)),
-                            fontSize = 12.sp
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-
                 }
-                HorizontalDivider()
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
                 NavigationDrawerItem(
-                    modifier = Modifier.background(Color.White),
                     label = {
-                    Text(
-                        text = "Perfil",
-                        color = PrimaryDarkJC,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
+                        Text(
+                            text = "Perfil",
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
                     selected = false,
                     icon = {
                         Icon(
                             imageVector = Icons.Default.AccountCircle,
                             contentDescription = "profile",
-//                            tint = PrimaryDarkJC
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     },
                     onClick = {
@@ -247,21 +219,23 @@ fun RootNavHost() {
                         navigationController.navigate(Screens.Profile.screen) {
                             popUpTo(0)
                         }
-                    })
+                    }
+                )
 
-                NavigationDrawerItem(label = {
-                    Text(
-                        text = "Clientes",
-                        color = PrimaryDarkJC,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
+                NavigationDrawerItem(
+                    label = {
+                        Text(
+                            text = "Clientes",
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
                     selected = false,
                     icon = {
                         Icon(
                             imageVector = Icons.Default.Person,
                             contentDescription = null,
-                            tint = PrimaryDarkJC
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     },
                     onClick = {
@@ -271,21 +245,23 @@ fun RootNavHost() {
                         navigationController.navigate(Screens.Client.screen) {
                             popUpTo(0)
                         }
-                    })
+                    }
+                )
 
-                NavigationDrawerItem(label = {
-                    Text(
-                        text = "Mapa",
-                        color = PrimaryDarkJC,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
+                NavigationDrawerItem(
+                    label = {
+                        Text(
+                            text = "Mapa",
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
                     selected = false,
                     icon = {
                         Icon(
                             imageVector = Icons.Default.LocationOn,
                             contentDescription = null,
-                            tint = PrimaryDarkJC
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     },
                     onClick = {
@@ -295,21 +271,23 @@ fun RootNavHost() {
                         navigationController.navigate(Screens.Route.screen) {
                             popUpTo(0)
                         }
-                    })
+                    }
+                )
 
-                NavigationDrawerItem(label = {
-                    Text(
-                        text = "Ventas Generadas",
-                        color = PrimaryDarkJC,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
+                NavigationDrawerItem(
+                    label = {
+                        Text(
+                            text = "Ventas Generadas",
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
                     selected = false,
                     icon = {
                         Icon(
                             imageVector = Icons.Default.List,
                             contentDescription = null,
-                            tint = PrimaryDarkJC
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     },
                     onClick = {
@@ -319,46 +297,37 @@ fun RootNavHost() {
                         navigationController.navigate(Screens.GeneratedOrders.screen) {
                             popUpTo(0)
                         }
-                    })
+                    }
+                )
 
-                NavigationDrawerItem(label = {
-                    Text(
-                        text = "Cerrar sesion",
-                        color = PrimaryDarkJC,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
+                NavigationDrawerItem(
+                    label = {
+                        Text(
+                            text = "Cerrar sesión",
+                            color = MaterialTheme.colorScheme.error,
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
                     selected = false,
                     icon = {
                         Icon(
                             imageVector = Icons.Default.ExitToApp,
                             contentDescription = null,
-                            tint = PrimaryDarkJC
+                            tint = MaterialTheme.colorScheme.error
                         )
                     },
                     onClick = {
                         coroutineScope.launch {
                             drawerState.close()
-//                            val userId = userRepository.getUserId()
-//                            scope.launch {
-//                                val ok = userId?.let { logout(context, it.toInt()) }
-//                                if (ok == true) {
-                                    tokenRepository.clearToken()
-                                    tokenRepository.clearRefreshToken()
-                                    userRepository.clearUserId()
-                                    userRepository.clearUserEmail()
-                                    Toast.makeText(context, "Cerraste sesión.", Toast.LENGTH_SHORT).show()
-                                    navigationController.navigate(Screens.Login.screen)
-//                                }
-//                            }
-
-
-
-
+                            tokenRepository.clearToken()
+                            tokenRepository.clearRefreshToken()
+                            userRepository.clearUserId()
+                            userRepository.clearUserEmail()
+                            Toast.makeText(context, "Cerraste sesión.", Toast.LENGTH_SHORT).show()
+                            navigationController.navigate(Screens.Login.screen)
                         }
-
-
-                    })
+                    }
+                )
             }
         },
     ) {
@@ -371,12 +340,17 @@ fun RootNavHost() {
 
 
 
-                    TopAppBar(title = { Text(text = "5M Distribuciones") },
-
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = "5M Distribuciones",
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        },
                         colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = PrimaryDarkJC,
-                            titleContentColor = Color.White,
-                            navigationIconContentColor = Color.White
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
                         ),
                         navigationIcon = {
                             IconButton(onClick = {
@@ -385,10 +359,12 @@ fun RootNavHost() {
                                 }
                             }) {
                                 Icon(
-                                    Icons.Rounded.Menu, contentDescription = "MenuButton"
+                                    Icons.Rounded.Menu,
+                                    contentDescription = "MenuButton"
                                 )
                             }
-                        })
+                        }
+                    )
                 } else {
                     null
                 }

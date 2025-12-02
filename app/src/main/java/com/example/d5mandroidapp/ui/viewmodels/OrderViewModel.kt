@@ -55,8 +55,8 @@ class OrderViewModel @Inject constructor(
         var creditPrice = 0.0
 
         if(productTariff.exemptFromIgv) {
-            cashPrice = productTariff.cashSalePriceWithoutIgv.toString().toDouble()
-            creditPrice = productTariff.creditSalePriceWithoutIgv.toString().toDouble()
+            cashPrice = productTariff.cashSalePrice.toString().toDouble()
+            creditPrice = productTariff.creditSalePrice.toString().toDouble()
         }else{
             cashPrice = productTariff.cashSalePrice.toString().toDouble()
             creditPrice = productTariff.creditSalePrice.toString().toDouble()
@@ -91,26 +91,33 @@ class OrderViewModel @Inject constructor(
 //        onChangeStatusProductTariff(productTariff.id.toInt() , true)
     }
 
-    fun deleteOperationDetailItem(productTariffId: Int){
-//        val selectedFound = state.value.operationDetails.find { it.productTariffId == productTariffId }
-//        if (selectedFound != null) {
-//
-//            viewModelScope.launch {
-//                _state.update { it.copy(
-//                    operationDetails = it.operationDetails.toMutableList().apply { remove(selectedFound) }
-//                )}
-//            }
-//            searchDiscounts(state.value.selectedPaymentType)
-//            onChangeStatusProductTariff(productTariffId , false)
-//        }
+    fun deleteOperationDetailItemFromTariffList(productTariffId: Int){
         viewModelScope.launch(Dispatchers.Default) {
             _state.update { it.copy(
-                operationDetails = it.operationDetails.filterNot { it.productTariffId == productTariffId }
+                operationDetails = state.value.operationDetails.filterNot { it.productTariffId == productTariffId }
             )}
-//            searchDiscounts(state.value.selectedPaymentType)
-//            onChangeStatusProductTariff(productTariffId, false)
         }
 
+    }
+    fun deleteOperationDetailItemFromDetailList(productTariffId: Int){
+        val selectedFound = state.value.operationDetails.find { it.productTariffId == productTariffId }
+        if (selectedFound != null) {
+
+            viewModelScope.launch {
+                _state.update { it.copy(
+                    operationDetails = it.operationDetails.toMutableList().apply { remove(selectedFound) }
+                )}
+            }
+//            searchDiscounts(state.value.selectedPaymentType)
+//            onChangeStatusProductTariff(productTariffId , false)
+        }
+//        viewModelScope.launch(Dispatchers.Default) {
+//            _state.update { it.copy(
+//                operationDetails = state.value.operationDetails.filterNot { it.productTariffId == productTariffId }
+//            )}
+//        }
+        searchDiscounts(state.value.selectedPaymentType)
+        onChangeStatusProductTariff(productTariffId, false)
     }
 
     private fun onChangeStatusProductTariff(productTariffId: Int, status: Boolean) {
@@ -199,7 +206,7 @@ class OrderViewModel @Inject constructor(
 //        }
 //        state.value.productTariffs
         if(status) addOperationDetailItem(productTariff)
-        else deleteOperationDetailItem(productTariff.id.toInt())
+        else deleteOperationDetailItemFromTariffList(productTariff.id.toInt())
 
 //        state.value.operationDetails.forEach { operationDetail ->
 //            Log.d("D5MAP","operationDetail : ${operationDetail.productTariffId} productActiveType : ${operationDetail.productActiveType}")

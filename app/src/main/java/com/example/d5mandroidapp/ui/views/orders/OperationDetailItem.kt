@@ -278,7 +278,7 @@ fun OperationDetailItem(
                     .size(30.dp),
 
                 onClick = {
-                    viewModel.deleteOperationDetailItem(operationDetail.productTariffId)
+                    viewModel.deleteOperationDetailItemFromDetailList(operationDetail.productTariffId)
                 }) {
 
                 Icon(

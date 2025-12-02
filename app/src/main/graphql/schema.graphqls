@@ -71,7 +71,7 @@ type Query {
 
   employeesWithGang: [CustomUserType]
 
-  debtorClientsBySellerIdAndDate(sellerId: Int, date: Date): [OperationType]
+  debtorClientsBySellerIdAndDay(sellerId: Int, day: Int): [OperationType]
 
   cashesByType(type: String): [CashType]
 
@@ -139,6 +139,8 @@ type Query {
 
   pendingSalesBySellerAndSupplierAndDates(startDate: Date, endDate: Date, paymentType: Int, sellerId: Int, supplierId: Int): [OperationType]
 
+  salesBySerialAndCorrelative(searchText: String): [OperationType]
+
   unitById(pk: ID): UnitType
 
   warehouseById(pk: ID): WarehouseType
@@ -171,7 +173,7 @@ type Query {
 
   allWarehouses(subsidiaryId: Int, truckId: Int, category: String): [WarehouseType]
 
-  allProducts(criteria: String, searchText: String, supplierId: Int, productLineId: Int, productSubLineId: Int, available: String, activeType: String): [ProductType]
+  allProducts(criteria: String, searchText: String, supplierId: Int, productLineId: Int, productSubLineId: Int, available: String, activeType: String, subjectPerception: Boolean, exemptFromIgv: Boolean): [ProductType]
 
   allProductsGift: [ProductType]
 
@@ -196,6 +198,8 @@ type Query {
   transfersByDates(startDate: Date, endDate: Date, warehouseId: Int, operationStatus: String): [OperationType]
 
   guidesByDates(startDate: Date, endDate: Date, warehouseId: Int, operationStatus: String): [OperationType]
+
+  creditNotesOutsideByDates(startDate: Date, endDate: Date, warehouseId: Int, operationStatus: String): [OperationType]
 
   regularizationOperations(warehouseId: ID, productId: ID, startDate: Date, endDate: Date): InventoryType
 
@@ -2411,6 +2415,11 @@ enum OperationsOperationOperationTypeChoices {
   A_12
 
   """
+  NOTA DE CREDITO POR FUERA
+  """
+  A_13
+
+  """
   NO APLICA
   """
   NA
@@ -2479,6 +2488,11 @@ enum OperationsOperationParentTypeChoices {
   GUIA DE REMISION - DEV. COMPRA
   """
   A_12
+
+  """
+  NOTA DE CREDITO POR FUERA
+  """
+  A_13
 
   """
   NO APLICA
@@ -3030,6 +3044,12 @@ type Mutation {
 
   cancelGuide(id: ID!): CancelGuideMutation
 
+  createCreditNoteOutside(orderDetails: [InputOrderDetailType], saleId: Int): CreateCreditNoteOutsideMutation
+
+  authorizeCreditNoteOutside(id: ID!): AuthorizeCreditNoteOutsideMutation
+
+  cancelCreditNoteOutside(id: ID!): CancelCreditNoteOutsideMutation
+
   tokenAuth(email: String!, password: String!): ObtainJSONWebToken
 
   verifyToken(token: String): Verify
@@ -3159,6 +3179,8 @@ input InputOrderDetailType {
   productName: String
 
   productCode: String
+
+  productEan: String = ""
 
   productExemptFromIgv: Boolean
 
@@ -3682,6 +3704,18 @@ type AuthorizeGuideMutation {
 }
 
 type CancelGuideMutation {
+  message: String
+}
+
+type CreateCreditNoteOutsideMutation {
+  message: String
+}
+
+type AuthorizeCreditNoteOutsideMutation {
+  message: String
+}
+
+type CancelCreditNoteOutsideMutation {
   message: String
 }
 

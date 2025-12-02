@@ -47,6 +47,8 @@ import com.example.d5mandroidapp.domain.UpdateWithoutOrderUseCase
 import com.example.d5mandroidapp.domain.VerifyTokenUseCase
 import com.example.d5mandroidapp.storage.TokenRepository
 import com.example.d5mandroidapp.storage.TokenRepositoryImpl
+import com.example.d5mandroidapp.storage.UserRepository
+import com.example.d5mandroidapp.storage.UserRepositoryImpl
 import com.google.android.gms.location.LocationServices
 import dagger.Module
 import dagger.Provides
@@ -259,6 +261,18 @@ object NetworkModule {
     @Singleton
     fun provideRemoveRefreshTokenUseCase(userApiClient: UserApiClient): RemoveRefreshTokenUseCase {
         return RemoveRefreshTokenUseCase(userApiClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTokenRepository(@ApplicationContext context: Context): TokenRepository {
+        return TokenRepositoryImpl(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(@ApplicationContext context: Context): UserRepository {
+        return UserRepositoryImpl(context)
     }
 
 }

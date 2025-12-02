@@ -1,11 +1,7 @@
 package com.example.d5mandroidapp.ui.views
-import android.content.Context
-import android.util.Log
+
 import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,169 +10,210 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.*
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import coil.compose.ImagePainter
-import com.apollographql.apollo3.exception.ApolloException
-import com.example.d5mandroidapp.LoginMutation
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.d5mandroidapp.R
-import com.example.d5mandroidapp.apollo.apolloClient
-import com.example.d5mandroidapp.storage.TokenRepositoryImpl
-import com.example.d5mandroidapp.storage.UserRepositoryImpl
+import com.example.d5mandroidapp.data.states.AuthErrorType
+import com.example.d5mandroidapp.data.states.AuthState
 import com.example.d5mandroidapp.ui.theme.D5MAndroidAppTheme
-import com.example.d5mandroidapp.ui.theme.GreenJC
-import com.example.d5mandroidapp.ui.theme.PrimaryDarkJC
-import com.example.d5mandroidapp.ui.theme.Purple200
-import com.example.d5mandroidapp.ui.theme.Purple500
-import com.example.d5mandroidapp.ui.theme.Shapes
-import kotlinx.coroutines.launch
+import com.example.d5mandroidapp.ui.viewmodels.AuthViewModel
 
 @Composable
-fun LoginScreen(navigateToProfile: () -> Unit){
-
+fun LoginScreen(
+    navigateToProfile: () -> Unit,
+    viewModel: AuthViewModel = hiltViewModel()
+) {
     val context = LocalContext.current
+    val authState by viewModel.authState.collectAsState()
 
-    var email by remember { mutableStateOf("paola_vanessa@gmail.com") }
-    var password by remember { mutableStateOf("123456") }
-    var loading by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var emailError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+
+    // Manejar cambios en el estado de autenticación
+    LaunchedEffect(authState) {
+        when (val state = authState) {
+            is AuthState.Success -> {
+                if (state.isAuthenticated) {
+                    navigateToProfile()
+                }
+            }
+            is AuthState.Error -> {
+                val message = when (state.errorType) {
+                    AuthErrorType.EMPTY_FIELDS -> {
+                        if (email.isBlank()) {
+                            emailError = "Este campo es obligatorio"
+                        }
+                        if (password.isBlank()) {
+                            passwordError = "Este campo es obligatorio"
+                        }
+                        state.message
+                    }
+                    AuthErrorType.INVALID_EMAIL_FORMAT -> {
+                        emailError = "Correo electrónico inválido"
+                        state.message
+                    }
+                    AuthErrorType.INVALID_CREDENTIALS -> {
+                        passwordError = "Credenciales incorrectas"
+                        state.message
+                    }
+                    else -> state.message
+                }
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            }
+            else -> {
+                // Limpiar errores cuando no hay error
+                emailError = null
+                passwordError = null
+            }
+        }
+    }
+
+    val isLoading = authState is AuthState.Loading
 
     D5MAndroidAppTheme {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(20.dp)
                 .paint(
                     painterResource(id = R.drawable.bg21),
                     contentScale = ContentScale.Fit,
                     alignment = Alignment.TopCenter
-                )  // Set background image
-            ,
+                ),
             verticalArrangement = Arrangement.Bottom,
             horizontalAlignment = Alignment.CenterHorizontally
-
         ) {
-//            Image(
-//                painter = painterResource(id = R.drawable.character_15),
-//                contentDescription = "Login image",
-//                modifier = Modifier.fillMaxWidth().padding(20.dp)
-//            )
-//            Spacer(modifier = Modifier.height(50.dp))
-            Text(text = "Bienvenido de nuevo", fontSize = 23.sp, fontWeight = FontWeight.Bold)
+            Text(
+                text = "Bienvenido de nuevo",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onBackground
+            )
             Spacer(modifier = Modifier.height(20.dp))
 
-            Text(text = "Ingresa a tu cuenta")
+            Text(
+                text = "Ingresa a tu cuenta",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            OutlinedTextField(modifier = Modifier.fillMaxWidth(),value = email, onValueChange = { email = it }, singleLine = true, label = {
-                Text(text = "Correo electronico")
-            })
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = email,
+                onValueChange = {
+                    email = it
+                    emailError = null
+                },
+                singleLine = true,
+                label = { Text(text = "Correo electrónico") },
+                isError = emailError != null,
+                supportingText = emailError?.let { { Text(text = it, color = MaterialTheme.colorScheme.error) } },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    errorBorderColor = MaterialTheme.colorScheme.error,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    cursorColor = MaterialTheme.colorScheme.primary
+                ),
+                shape = MaterialTheme.shapes.small
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(modifier = Modifier.fillMaxWidth(), value = password, onValueChange = { password = it }, singleLine = true, label = {
-                Text(text = "Password")
-            }, visualTransformation = PasswordVisualTransformation())
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                value = password,
+                onValueChange = {
+                    password = it
+                    passwordError = null
+                },
+                singleLine = true,
+                label = { Text(text = "Contraseña") },
+                visualTransformation = PasswordVisualTransformation(),
+                isError = passwordError != null,
+                supportingText = passwordError?.let { { Text(text = it, color = MaterialTheme.colorScheme.error) } },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                    errorBorderColor = MaterialTheme.colorScheme.error,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    cursorColor = MaterialTheme.colorScheme.primary
+                ),
+                shape = MaterialTheme.shapes.small
+            )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = GreenJC, shape = RoundedCornerShape(10.dp))
-                    .height(60.dp),
-                enabled = !loading,
+                    .height(56.dp),
+                enabled = !isLoading,
                 onClick = {
-                    loading = true
-                    Log.i("Credential", "Email: $email Password: $password")
-                    scope.launch {
-                        val ok = login(context, email, password)
-                        loading = false
-                        if (ok) {
-                            navigateToProfile()
-                        }
-                    }
+                    emailError = null
+                    passwordError = null
+                    viewModel.login(email.trim(), password)
                 },
-                shape = RoundedCornerShape(10.dp),
+                shape = MaterialTheme.shapes.medium,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = GreenJC
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
                 ),
                 elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 5.dp,
-                    pressedElevation = 2.dp
+                    defaultElevation = 4.dp,
+                    pressedElevation = 2.dp,
+                    disabledElevation = 0.dp
                 )
-
             ) {
-                if (loading) {
+                if (isLoading) {
                     Loading()
                 } else {
-                    Text(text = "Ingresar", color = Color.White, fontSize = 15.sp)
+                    Text(
+                        text = "Ingresar",
+                        style = MaterialTheme.typography.labelLarge
+                    )
                 }
-
             }
-
+            
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
 
 @Composable
 fun Loading() {
-    CircularProgressIndicator(modifier = Modifier.size(32.dp))
-}
-
-private suspend fun login(context: Context, email: String, password: String): Boolean {
-    val response = try {
-        apolloClient.mutation(LoginMutation(email = email, password = password)).execute()
-    } catch (e: ApolloException) {
-        Log.w("D5MAP2", "No se pudo conectar", e)
-        Toast.makeText(context, "No se pudo conectar", Toast.LENGTH_SHORT).show()
-        return false
-    }
-    if (response.hasErrors()) {
-        Toast.makeText(context, "Error al iniciar sesión\n" +
-                "${response.errors?.get(0)?.message}", Toast.LENGTH_SHORT).show()
-        return false
-    }
-    val token = response.data?.tokenAuth?.token
-    val refreshToken = response.data?.tokenAuth?.refreshToken
-
-    if (token == null) {
-        Toast.makeText(context, "No se pudo iniciar sesión: el backend no devolvió ningún token", Toast.LENGTH_SHORT).show()
-        return false
-    }
-
-    val tokenRepository = TokenRepositoryImpl(context)
-    tokenRepository.setToken(token)
-    tokenRepository.setRefreshToken(refreshToken)
-
-    val userRepository = UserRepositoryImpl(context)
-    val user = response.data?.tokenAuth?.user
-    if (user != null) {
-        userRepository.setUserId(user.id)
-        userRepository.setUserEmail(user.email)
-    }
-    return true
+    CircularProgressIndicator(
+        modifier = Modifier.size(24.dp),
+        color = MaterialTheme.colorScheme.onPrimary,
+        strokeWidth = 2.dp
+    )
 }
