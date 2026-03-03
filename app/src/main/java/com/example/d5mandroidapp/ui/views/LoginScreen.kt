@@ -2,7 +2,9 @@ package com.example.d5mandroidapp.ui.views
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,9 +12,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -26,14 +33,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.paint
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.d5mandroidapp.R
 import com.example.d5mandroidapp.data.states.AuthErrorType
 import com.example.d5mandroidapp.data.states.AuthState
 import com.example.d5mandroidapp.ui.theme.D5MAndroidAppTheme
@@ -49,6 +56,7 @@ fun LoginScreen(
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
     var emailError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
 
@@ -93,20 +101,59 @@ fun LoginScreen(
 
     val isLoading = authState is AuthState.Loading
 
+    val isDarkTheme = isSystemInDarkTheme()
+    
     D5MAndroidAppTheme {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(20.dp)
-                .paint(
-                    painterResource(id = R.drawable.bg21),
-                    contentScale = ContentScale.Fit,
-                    alignment = Alignment.TopCenter
-                ),
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .background(
+                    Brush.verticalGradient(
+                        colors = if (isDarkTheme) {
+                            // Modo oscuro - gradiente sutil y elegante
+                            listOf(
+                                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+                                MaterialTheme.colorScheme.background,
+                                MaterialTheme.colorScheme.background,
+                                MaterialTheme.colorScheme.surface.copy(alpha = 0.3f)
+                            )
+                        } else {
+                            // Modo claro - gradiente suave con toque de color primario
+                            listOf(
+                                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
+                                MaterialTheme.colorScheme.background,
+                                MaterialTheme.colorScheme.background,
+                                MaterialTheme.colorScheme.surface.copy(alpha = 0.2f)
+                            )
+                        },
+                        startY = 0f,
+                        endY = Float.POSITIVE_INFINITY
+                    )
+                )
         ) {
+            // Decoración de fondo con gradiente radial suave
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.radialGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.primary.copy(alpha = if (isDarkTheme) 0.15f else 0.12f),
+                                Color.Transparent
+                            ),
+                            center = Offset(0f, 0f),
+                            radius = 1000f
+                        )
+                    )
+            )
+            
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp),
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
             Text(
                 text = "Bienvenido de nuevo",
                 style = MaterialTheme.typography.headlineSmall,
@@ -155,7 +202,18 @@ fun LoginScreen(
                 },
                 singleLine = true,
                 label = { Text(text = "Contraseña") },
-                visualTransformation = PasswordVisualTransformation(),
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(
+                        onClick = { passwordVisible = !passwordVisible }
+                    ) {
+                        Icon(
+                            imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                            contentDescription = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                },
                 isError = passwordError != null,
                 supportingText = passwordError?.let { { Text(text = it, color = MaterialTheme.colorScheme.error) } },
                 colors = OutlinedTextFieldDefaults.colors(
@@ -205,6 +263,7 @@ fun LoginScreen(
             }
             
             Spacer(modifier = Modifier.height(32.dp))
+            }
         }
     }
 }

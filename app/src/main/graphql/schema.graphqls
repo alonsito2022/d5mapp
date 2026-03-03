@@ -99,6 +99,8 @@ type Query {
 
   allClients: [PersonType]
 
+  allClientsByUserId(userId: Int): [PersonType]
+
   clientsByUserId(userId: Int, visitDate: Date): [PersonType]
 
   clientsBySaleCenter(saleCenterId: Int): [PersonType]
@@ -2709,6 +2711,8 @@ type PersonType {
   checked: Boolean
 
   debt: Float
+
+  visitDatesCurrentWeek: [String]
 }
 
 type DailyGenerateRouteType {

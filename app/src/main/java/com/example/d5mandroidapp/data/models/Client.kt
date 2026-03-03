@@ -19,6 +19,7 @@ data class Client(
     val isBlocked: Boolean,
     val isSuspended: Boolean,
     val isObserved: Boolean,
+    val visitDatesCurrentWeek: List<String> = emptyList(),
 
     ) {
     fun doesMatchSearchQuery(query: String, searchBy: String): Boolean {

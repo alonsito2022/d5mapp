@@ -58,10 +58,10 @@ import com.example.d5mandroidapp.utils.TimerUtils
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.paint
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -160,16 +160,51 @@ fun RootNavHost() {
                         )
                     }
                 }
+                // Header del drawer con gradiente en lugar de imagen
+                val isDarkTheme = isSystemInDarkTheme()
                 Box(
                     modifier = Modifier
-                        .background(MaterialTheme.colorScheme.surface)
                         .fillMaxWidth()
                         .height(250.dp)
-                        .paint(
-                            painterResource(id = R.drawable.bg15),
-                            contentScale = ContentScale.FillBounds
+                        .background(
+                            Brush.verticalGradient(
+                                colors = if (isDarkTheme) {
+                                    listOf(
+                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+                                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f),
+                                        MaterialTheme.colorScheme.surface
+                                    )
+                                } else {
+                                    listOf(
+                                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.6f),
+                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.4f),
+                                        MaterialTheme.colorScheme.surface.copy(alpha = 0.3f),
+                                        MaterialTheme.colorScheme.surface
+                                    )
+                                },
+                                startY = 0f,
+                                endY = Float.POSITIVE_INFINITY
+                            )
                         )
                 ) {
+                    // Decoración adicional con gradiente radial
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.radialGradient(
+                                    colors = listOf(
+                                        MaterialTheme.colorScheme.primary.copy(alpha = if (isDarkTheme) 0.25f else 0.2f),
+                                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.15f),
+                                        androidx.compose.ui.graphics.Color.Transparent
+                                    ),
+                                    center = Offset(0f, 0f),
+                                    radius = 500f
+                                )
+                            )
+                    )
+                    
                     Column(
                         modifier = Modifier
                             .padding(all = 20.dp)

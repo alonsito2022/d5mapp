@@ -22,6 +22,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -29,8 +32,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.ui.res.colorResource
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -46,13 +51,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.wear.compose.material.ContentAlpha
+import com.example.d5mandroidapp.R
 import com.example.d5mandroidapp.data.states.ClientState
 import com.example.d5mandroidapp.data.states.SaleOrderState
 import com.example.d5mandroidapp.data.states.UserState
+import com.example.d5mandroidapp.navigation.Screens
 import com.example.d5mandroidapp.ui.theme.PrimaryDarkJC
 import com.example.d5mandroidapp.ui.theme.Purple40
 import com.example.d5mandroidapp.ui.theme.Purple80
@@ -75,12 +83,22 @@ fun ClientScreen(navController: NavController) {
     val userViewModel: UserViewModel = hiltViewModel()
     val userState by userViewModel.state.collectAsState()
 
+    val clientViewModel: ClientViewModel = hiltViewModel()
+    val clientState by clientViewModel.state.collectAsState()
+
     val withoutOrderViewModel: WithoutOrderViewModel = hiltViewModel()
     val withoutOrderState by withoutOrderViewModel.state.collectAsState()
 
-    val searchClientText by userViewModel.searchClientText.collectAsState()
-    val searchClientBy by userViewModel.searchClientBy.collectAsState()
+    val searchClientText by clientViewModel.searchText.collectAsState()
+    val searchClientBy by clientViewModel.searchBy.collectAsState()
     val context = LocalContext.current
+
+    // Asegurar que se carguen los clientes cuando se monte la pantalla si no hay clientes cargados
+    LaunchedEffect(clientState.userId) {
+        if (clientState.userId > 0 && clientState.clients.isEmpty() && !clientState.isLoading) {
+            clientViewModel.loadClients()
+        }
+    }
 
     Column( modifier = Modifier.padding(top = 70.dp)){
         if (userState.showSearchPanel){
@@ -125,16 +143,20 @@ fun ClientScreen(navController: NavController) {
             SearchClient(
                 searchText = searchClientText,
                 searchBy = searchClientBy,
-                onTextChangeTextField = userViewModel::onSearchTextChange,
-                cleanTextField = userViewModel::onSearchTextChange,
-                updateSearchBy = userViewModel::updateSearchBy,
-                onClickButtonSearchClient = userViewModel::onClickButtonSearch,
+                onTextChangeTextField = clientViewModel::onSearchTextChange,
+                cleanTextField = clientViewModel::onSearchTextChange,
+                updateSearchBy = clientViewModel::updateSearchBy,
+                onClickButtonSearchClient = { 
+                    if (searchClientText.length >= 3) {
+                        clientViewModel.onSearchTextChange(searchClientText)
+                    }
+                },
                 onClickButtonToggleSearchPanel = userViewModel::onClickButtonToggleSearchPanel,
                 userState= userState
             )
 
             Text(modifier = Modifier.padding(start = 4.dp), color = PrimaryDarkJC, text = "Ingreso minimo 3 caracteres.", style = MaterialTheme.typography.labelSmall)
-            Text(modifier = Modifier.padding(start = 4.dp), color = PrimaryDarkJC, text = "Se encontraron ${userState.filteredDailyRoutes.size} registros", style = MaterialTheme.typography.labelSmall)
+            Text(modifier = Modifier.padding(start = 4.dp), color = PrimaryDarkJC, text = "Se encontraron ${clientState.clients.size} registros (Total cargados: ${clientState.clients.size})", style = MaterialTheme.typography.labelSmall)
 
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 10.dp),
@@ -142,7 +164,7 @@ fun ClientScreen(navController: NavController) {
                 color = Color.DarkGray
             )
 
-            if (userState.isLoading) {
+            if (clientState.isLoading) {
 
                 Box(modifier = Modifier.fillMaxWidth()) {
                     CircularProgressIndicator(
@@ -151,8 +173,8 @@ fun ClientScreen(navController: NavController) {
                 }
 
             } else {
-                if (userState.filteredDailyRoutes.isNotEmpty()){
-                    ShowClients(userState, withoutOrderViewModel, navController)
+                if (clientState.clients.isNotEmpty()){
+                    ShowClientsFromClientViewModel(clientState, withoutOrderViewModel, navController)
                 }else{
                     Text(text = "No hay registros")
                 }
@@ -192,6 +214,23 @@ fun ShowClients(userState: UserState, withoutOrderViewModel: WithoutOrderViewMod
                 modifier = Modifier.fillMaxWidth(),
                 withoutOrderViewModel = withoutOrderViewModel,
                 navController = navController
+            )
+        }
+    }
+}
+
+@Composable
+fun ShowClientsFromClientViewModel(clientState: ClientState, withoutOrderViewModel: WithoutOrderViewModel, navController: NavController){
+    val clientViewModel: ClientViewModel = hiltViewModel()
+    
+    LazyColumn(modifier = Modifier.fillMaxWidth()) {
+        items(clientState.clients) { client ->
+            ClientItemFromClient(
+                client = client,
+                modifier = Modifier.fillMaxWidth(),
+                withoutOrderViewModel = withoutOrderViewModel,
+                navController = navController,
+                clientViewModel = clientViewModel
             )
         }
     }

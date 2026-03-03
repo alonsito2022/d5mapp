@@ -1,0 +1,22 @@
+query GetClientsByUser($userId: Int) {
+  allClientsByUserId(userId: $userId) {
+    id
+    code
+    names
+    phone
+    documentType
+    documentTypeReadable
+    documentNumber
+    observation
+    isEnabled
+    typeTradeId
+    typeTradeName
+    creditLine
+    debt
+    isBlocked
+    isSuspended
+    isObserved
+    visitDatesCurrentWeek
+  }
+}
+

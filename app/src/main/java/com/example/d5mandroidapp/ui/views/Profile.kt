@@ -2,8 +2,8 @@ package com.example.d5mandroidapp.ui.views
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,12 +31,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.d5mandroidapp.R
 import com.example.d5mandroidapp.ui.theme.D5MAndroidAppTheme
 import com.example.d5mandroidapp.ui.viewmodels.ProfileViewModel
 
@@ -45,6 +45,7 @@ import com.example.d5mandroidapp.ui.viewmodels.ProfileViewModel
 fun Profile() {
     val viewModel: ProfileViewModel = hiltViewModel()
     val state by viewModel.state.collectAsState()
+    val isDarkTheme = isSystemInDarkTheme()
     
     D5MAndroidAppTheme {
         Box(
@@ -65,14 +66,49 @@ fun Profile() {
                         .padding(horizontal = 16.dp, vertical = 24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Imagen de cabecera
-                    Image(
-                        painter = painterResource(id = R.drawable.bg10),
-                        contentDescription = "Imagen de perfil",
+                    // Header con gradiente en lugar de imagen
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(180.dp)
-                    )
+                            .height(200.dp)
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = if (isDarkTheme) {
+                                        listOf(
+                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f),
+                                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.1f)
+                                        )
+                                    } else {
+                                        listOf(
+                                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.3f),
+                                            MaterialTheme.colorScheme.surface.copy(alpha = 0.2f)
+                                        )
+                                    },
+                                    startY = 0f,
+                                    endY = Float.POSITIVE_INFINITY
+                                )
+                            )
+                            .clip(MaterialTheme.shapes.medium)
+                    ) {
+                        // Decoración adicional con gradiente radial
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    Brush.radialGradient(
+                                        colors = listOf(
+                                            MaterialTheme.colorScheme.primary.copy(alpha = if (isDarkTheme) 0.2f else 0.15f),
+                                            MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f),
+                                            androidx.compose.ui.graphics.Color.Transparent
+                                        ),
+                                        center = Offset(0f, 0f),
+                                        radius = 600f
+                                    )
+                                )
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(24.dp))
 

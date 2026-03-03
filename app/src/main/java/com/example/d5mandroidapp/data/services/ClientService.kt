@@ -1,9 +1,11 @@
 package com.example.d5mandroidapp.data.services
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Optional
 import com.example.d5mandroidapp.ClientAddressesListQuery
 import com.example.d5mandroidapp.ClientFilteredListQuery
 import com.example.d5mandroidapp.GetClientDebtQuery
+import com.example.d5mandroidapp.GetClientsByUserQuery
 import com.example.d5mandroidapp.OrderWithDebtListByClientQuery
 import com.example.d5mandroidapp.data.models.Client
 import com.example.d5mandroidapp.data.models.DetailedClient
@@ -22,6 +24,16 @@ class ClientService(
             .data
             ?.searchClientsByCriteria
             ?.map { it!!.toClientFiltered() }
+            ?: emptyList()
+    }
+
+    override suspend fun getClientsByUser(userId: Int): List<Client> {
+        return apolloClient
+            .query(GetClientsByUserQuery(Optional.present(userId)))
+            .execute()
+            .data
+            ?.allClientsByUserId
+            ?.map { it!!.toClient() }
             ?: emptyList()
     }
 

@@ -42,6 +42,12 @@ class WithoutOrderViewModel @Inject constructor(
         ) }
     }
 
+    fun setDailyRouteId(dailyRouteId: String){
+        _state.update { it.copy(
+            dailyRouteId = dailyRouteId
+        ) }
+    }
+
     fun onObservationTextChange(observation: String){
         _state.update { it.copy(
             observation = observation

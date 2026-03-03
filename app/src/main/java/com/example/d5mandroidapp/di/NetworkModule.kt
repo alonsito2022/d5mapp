@@ -27,6 +27,7 @@ import com.example.d5mandroidapp.domain.GetAssignedGangsByUserIdUseCase
 import com.example.d5mandroidapp.domain.GetAssignedZonesByUserIdUseCase
 import com.example.d5mandroidapp.domain.GetClientByIdUseCase
 import com.example.d5mandroidapp.domain.GetClientWithDebtByIdUseCase
+import com.example.d5mandroidapp.domain.GetClientsByUserUseCase
 import com.example.d5mandroidapp.domain.GetClientsFilteredUseCase
 import com.example.d5mandroidapp.domain.GetDailyRoutesByCriteriaUseCase
 import com.example.d5mandroidapp.domain.GetDiscountGiftsByProductsPurchasedUseCase
@@ -133,6 +134,12 @@ object NetworkModule {
     @Singleton
     fun provideGetClientsFilteredUseCase(clientApiClient: ClientApiClient): GetClientsFilteredUseCase {
         return GetClientsFilteredUseCase(clientApiClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetClientsByUserUseCase(clientApiClient: ClientApiClient): GetClientsByUserUseCase {
+        return GetClientsByUserUseCase(clientApiClient)
     }
 
     @Provides
